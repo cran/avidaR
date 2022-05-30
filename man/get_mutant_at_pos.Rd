@@ -2,31 +2,56 @@
 % Please edit documentation in R/get_mutant_at_pos.R
 \name{get_mutant_at_pos}
 \alias{get_mutant_at_pos}
-\title{Get a single-point mutant of a digital organism}
+\title{Get single-point mutants of wild-type organisms}
 \usage{
-get_mutant_at_pos(inst_replaced, inst_replaced_by, pos)
+get_mutant_at_pos(
+  genome_id = NULL,
+  inst_replaced = NULL,
+  inst_replaced_by = NULL,
+  pos = NULL
+)
 }
 \arguments{
-\item{inst_replaced}{A letter representing the instruction of the genome
-sequence of the organism to be mutated.}
+\item{genome_id}{Integer or a list of integer values. If not specified, the
+function will return the single-point mutants of a randomly chosen wild-type
+organism.}
 
-\item{inst_replaced_by}{A letter representing the instruction replaced in the
-genome of the single-point mutant.}
+\item{inst_replaced}{A letter representing the instruction of the genome
+sequence of the wild-type organism to be mutated. If not specified,
+the function will return the single-point mutants that have replaced the
+letter that the genome of the wild-type organism carried at that position
+(if the position is specified, otherwise it will return the mutations
+located on all positions) by the letter indicated in the argument
+inst_replaced_by (if specified, otherwise it will return all the mutants at
+that position on the genome of the wild type organism).}
+
+\item{inst_replaced_by}{A letter representing the instruction of the genome
+of the single-point mutant that have replaced the instruction of the genome
+of the wild-type organism. If not specified, the function will return all
+single-point mutants that have replaced the letter indicated in the argument
+inst_replaced (if specified, otherwise it will return all the mutants at that
+position on the genome of the wild type organism) of the genome of the
+wild-type organism at that position (if the position is specified, otherwise
+it will return the mutations located on all positions).}
 
 \item{pos}{Integer representing the position of the single-point mutation
 along the genome of a digital organism (from 1 to 100 for a genome length of
-100 instructions).}
+100 instructions). If not specified, the function will return all
+single-point mutants of the genome of the wild-type organism.}
 }
 \value{
-Data frame: Columns: "genome_id_ancestor", "genome_seq_ancestor",
-"genome_id_mutant", genome_seq_mutant".
+Data frame: Columns: "genome_id_wild_type", "genome_seq_wild_type",
+"genome_id_mutant", genome_seq_mutant", "pos".
 }
 \description{
-Get the genome sequences of a digital organism and one of its
-single-point mutants.
+Get the genome sequence of a digital organism (i.e., wild-type)
+and its single-point mutants.
 }
 \examples{
 
-get_mutant_at_pos(inst_replaced = 'o', inst_replaced_by = 'a', pos = 1)
+get_mutant_at_pos(genome_id = 582,
+                  inst_replaced = 'o', 
+                  inst_replaced_by = 'a',
+                  pos = 1)
 
 }

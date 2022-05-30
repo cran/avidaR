@@ -1,7 +1,8 @@
 test_that("get_tandem_id_from_logic_operation", {
 
   found1 <- get_tandem_id_from_logic_operation(
-    logic_operation = ""
+    logic_operation = "",
+    seed_id = 1
   )
 
   found2 <- get_tandem_id_from_logic_operation(
@@ -20,7 +21,7 @@ test_that("get_tandem_id_from_logic_operation", {
 
   expect_match(class(found1), "data.frame")
   expect_true(nrow(found1) > 0)
-  expect_equal(colnames(found1), c("tandem_id"))
+  expect_equal(colnames(found1), c("seed_id", "tandem_id"))
   expect_equal(found1$tandem_id[1], "tandem_4909824")
 
   expect_match(class(found2), "data.frame")

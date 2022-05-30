@@ -5,11 +5,11 @@
 #' for starting the pseudo-random number generator (i.e., a set of environments).
 #'
 #' @param phenotype_id Integer or list of integer values.
-#' @param seed_id Integer (from 1 to 1000), a vector of integer values, or a
-#' logical value. This integer is used for starting the pseudo-random number
-#' generator that represents the environment experiencing a digital organism.
-#' If a logical value is used, TRUE returns data found in all environments and
-#' FALSE (by default) returns only distinct data regardless of the seed.
+#' @param seed_id Integer (from 1 to 1000) or a vector of integer values. This
+#' integer is used for starting the pseudo-random number generator that
+#' represents the environment experiencing a digital organism. If seed_id value
+#' is not specified, it returns data for a single randomly chosen seed_id value
+#' (between 1 and 1000).
 #' @param tandem_seq Logical value (TRUE/FALSE) to show/hide this column
 #' (FALSE by default).
 #' @param tandem_pos Logical value (TRUE/FALSE) to show/hide this column
@@ -36,10 +36,10 @@
 #'
 #' @export
 
-get_tandem_id_from_phenotype_id <- function(phenotype_id, seed_id = FALSE, tandem_seq = FALSE, tandem_pos = FALSE) {
+get_tandem_id_from_phenotype_id <- function(phenotype_id, seed_id = sample(1:1000, 1), tandem_seq = FALSE, tandem_pos = FALSE) {
   # Validate params
   validate_param(param = "phenotype_id", value = phenotype_id, types = 2)
-  validate_param(param = "seed_id", value = seed_id, types = c(1, 2))
+  validate_param(param = "seed_id", value = seed_id, types = 2)
   validate_param(param = "tandem_pos", value = tandem_pos, types = 1)
   validate_param(param = "tandem_seq", value = tandem_seq, types = 1)
 

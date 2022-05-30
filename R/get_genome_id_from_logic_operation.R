@@ -7,12 +7,11 @@
 #' @param logic_operation List of logical operations from the following set:
 #' "equals", "exclusive-or", "not-or", "and-not", "or", "orn-not", "and", 
 #' "not-and", "not".
-#' @param seed_id Integer (from 1 to 1000), a vector of integer
-#' values, or a logical value. This integer is used for starting the
-#' pseudo-random number generator that represents the environment experiencing a
-#' digital organism. If a logical value is used, TRUE returns data found in all
-#' environments and FALSE (by default) returns only distinct data regardless of
-#' the seed.
+#' @param seed_id Integer (from 1 to 1000) or a vector of integer values. This
+#' integer is used for starting the pseudo-random number generator that
+#' represents the environment experiencing a digital organism. If seed_id value
+#' is not specified, it returns data for a single randomly chosen seed_id value
+#' (between 1 and 1000).
 #' @param genome_seq Logical value (TRUE/FALSE) to show/hide this column
 #' ("FALSE" by default).
 #' 
@@ -35,12 +34,12 @@
 #'
 #' @export
 
-get_genome_id_from_logic_operation <- function(logic_operation, seed_id = FALSE, genome_seq = FALSE) {
+get_genome_id_from_logic_operation <- function(logic_operation, seed_id = sample(1:1000, 1), genome_seq = FALSE) {
   # Validate logic_opretation
   validate_logic_operation(logic_operation)
 
   # Validate params
-  validate_param(param = "seed_id", value = seed_id, types = c(1, 2))
+  validate_param(param = "seed_id", value = seed_id, types = 2)
   validate_param(param = "genome_seq", value = genome_seq, types = 1)
 
   # Get phenotype_id

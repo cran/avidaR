@@ -128,7 +128,7 @@ replace_data <- function(param, value, query) {
   replace_value <- if(isTRUE(grepl("seed", param)))
     paste0("rdf:_", value)
   else
-    paste0(paste0("ONTOAVIDA:", param, "_", value), collapse = " ")
+    paste0(paste0("ONTOAVIDA:", param, "_", format(value, scientific = FALSE, trim = TRUE)), collapse = " ")
 
   # Id vars
   id_vars <- c("encodes_at_seed", "executes_at_seed", "seed", "genome", "transcriptome", "tandem", "phenotype")
@@ -266,7 +266,7 @@ remove_prefix <- function(prefix, data) {
     prefix = paste0(rdf_prefix, "_") 
  
   # Column names
-  cols <- c("organism_id", "seed_id", "encodes_at_seed_id","executes_at_seed_id", "genome_id", "transcriptome_id", "tandem_id", "phenotype_id", "genome_id_ancestor", "genome_id_mutant", "organism_id_ancestor", "organism_id_mutant")
+  cols <- c("organism_id", "seed_id", "encodes_at_seed_id","executes_at_seed_id", "genome_id", "transcriptome_id", "tandem_id", "phenotype_id", "genome_id_ancestor", "genome_id_mutant", "organism_id_ancestor", "organism_id_mutant", "genome_id_wild_type", "genome_seq_wild_type")
 
   # Replace prefix with empty string
   for (col_name in cols) {

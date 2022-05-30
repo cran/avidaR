@@ -43,12 +43,12 @@ for a list of seeds used for starting the pseudo-random number generator
 (i.e., a set of environments).
 }
 \examples{
-\dontrun{
+\donttest{
 # plot transcriptome 53674 at seed_1 and save to disk in pdf format
 plot_transcriptome(
   transcriptome_id = 53674,
   seed_id = 1,
-  save = TRUE,
+  save = FALSE,
   save_path = getwd(),
   format = "pdf"
 )

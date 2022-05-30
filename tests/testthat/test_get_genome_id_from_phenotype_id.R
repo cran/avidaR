@@ -1,7 +1,8 @@
 test_that("get_genome_id_from_phenotype_id", {
 
   found1 <- get_genome_id_from_phenotype_id(
-    phenotype_id = 0
+    phenotype_id = 0,
+    seed_id = 1
   )
 
   found2 <- get_genome_id_from_phenotype_id(
@@ -12,7 +13,7 @@ test_that("get_genome_id_from_phenotype_id", {
 
   expect_match(class(found1), "data.frame")
   expect_equal(nrow(found1) > 0 , TRUE)
-  expect_equal(colnames(found1), c("genome_id", "phenotype_id"))
+  expect_equal(colnames(found1), c("seed_id", "genome_id", "phenotype_id"))
   expect_equal(found1$genome_id[1], "genome_1")
 
   expect_match(class(found2), "data.frame")
