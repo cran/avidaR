@@ -7,7 +7,8 @@ encodes a specific phenotype}
 \usage{
 get_logic_operation_from_phenotype_id(
   phenotype_id = FALSE,
-  phenotype_binary = FALSE
+  phenotype_binary = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -16,6 +17,9 @@ logical value (if FALSE, the function returns the entire phenotype space).}
 
 \item{phenotype_binary}{Logical value (TRUE/FALSE) to show/hide
 phenotype_id in binary notation (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "phenotype_id", "phenotype_binary" (optional),
@@ -27,20 +31,33 @@ Get the logic operations encoded by a digital organism having
 the requested phenotype.
 }
 \examples{
+ 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
 
 # One phenotype
 get_logic_operation_from_phenotype_id(
   phenotype_id = 1,
-  phenotype_binary = TRUE
+  phenotype_binary = TRUE,
+  triplestore = triplestore
 )
 
 # More than one phenotype
 get_logic_operation_from_phenotype_id(
   phenotype_id = c(1,2,3),
-  phenotype_binary = TRUE
+  phenotype_binary = TRUE,
+  triplestore = triplestore
 )
 
 # All phenotypes
-get_logic_operation_from_phenotype_id()
+get_logic_operation_from_phenotype_id(triplestore = triplestore)
 
 }

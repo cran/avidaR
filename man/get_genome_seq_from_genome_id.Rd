@@ -4,10 +4,13 @@
 \alias{get_genome_seq_from_genome_id}
 \title{Get genome sequence from genome}
 \usage{
-get_genome_seq_from_genome_id(genome_id)
+get_genome_seq_from_genome_id(genome_id, triplestore)
 }
 \arguments{
 \item{genome_id}{Integer or a list of integer values.}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "genome_id" "genome_seq"
@@ -19,10 +22,24 @@ of a digital organism.
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single genome
-get_genome_seq_from_genome_id(1)
+get_genome_seq_from_genome_id(1, triplestore = triplestore)
 
 # More than one genome
-get_genome_seq_from_genome_id(genome_id = c(1, 2, 3, 4))
+get_genome_seq_from_genome_id(
+  genome_id = c(1, 2, 3, 4),
+  triplestore = triplestore
+)
 
 }

@@ -1,28 +1,41 @@
 test_that("get_transcriptome_id_from_genome_id", {
-
+  
+  triplestore <- triplestore_access$new()
+  
+  triplestore$set_access_options(
+    url = "https://graphdb.fortunalab.org",
+    user = "public_avida",
+    password = "public_avida",
+    repository = "avidaDB_test"
+  )
+  
   found1 <- get_transcriptome_id_from_genome_id(
-    genome_id = 1
+    genome_id = 1,
+    triplestore = triplestore
   )
 
   found2 <- get_transcriptome_id_from_genome_id(
     genome_id = c(1, 2),
     seed_id = c(2,1),
     transcriptome_seq = TRUE,
-    transcriptome_pos = FALSE
+    transcriptome_pos = FALSE,
+    triplestore = triplestore
   )
 
   found3 <- get_transcriptome_id_from_genome_id(
     genome_id = c(1, 2),
     seed_id = c(2,1),
     transcriptome_seq = FALSE,
-    transcriptome_pos = TRUE
+    transcriptome_pos = TRUE,
+    triplestore = triplestore
   )
 
   found4 <- get_transcriptome_id_from_genome_id(
     genome_id = 2,
     genome_seq = TRUE,
     transcriptome_seq = TRUE,
-    transcriptome_pos = TRUE
+    transcriptome_pos = TRUE,
+    triplestore = triplestore
   )
 
   expect_match(class(found1), "data.frame")

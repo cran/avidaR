@@ -8,7 +8,8 @@ get_tandem_id_from_logic_operation(
   logic_operation,
   seed_id = sample(1:1000, 1),
   tandem_seq = FALSE,
-  tandem_pos = FALSE
+  tandem_pos = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -27,6 +28,9 @@ is not specified, it returns data for a single randomly chosen seed_id value
 
 \item{tandem_pos}{Logical value (TRUE/FALSE) to show/hide this column
 (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "seed_id" (optional), "tandem_id", "tandem_seq"
@@ -38,13 +42,28 @@ digital organism that executes a specific combination of logic operations.
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single logic operation
-get_tandem_id_from_logic_operation(logic_operation = "not")
+get_tandem_id_from_logic_operation(
+  logic_operation = "not",
+  triplestore = triplestore
+)
 
 # More than one logic operation
 get_tandem_id_from_logic_operation(
   logic_operation = c("not", "and"),
-  tandem_seq = TRUE
+  tandem_seq = TRUE,
+  triplestore = triplestore
 )
 
 # At seed_1 and seed_2
@@ -52,7 +71,8 @@ get_tandem_id_from_logic_operation(
   logic_operation = c("not", "and"),
   tandem_seq = TRUE,
   tandem_pos = TRUE,
-  seed_id = c(1,2)
+  seed_id = c(1,2),
+  triplestore = triplestore
 )
 
 }

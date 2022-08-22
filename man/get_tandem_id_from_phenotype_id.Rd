@@ -8,7 +8,8 @@ get_tandem_id_from_phenotype_id(
   phenotype_id,
   seed_id = sample(1:1000, 1),
   tandem_seq = FALSE,
-  tandem_pos = FALSE
+  tandem_pos = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ is not specified, it returns data for a single randomly chosen seed_id value
 
 \item{tandem_pos}{Logical value (TRUE/FALSE) to show/hide this column
 (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Column: "seed_id" (optional), "phenotype_id",
@@ -37,17 +41,35 @@ for starting the pseudo-random number generator (i.e., a set of environments).
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single phenotype
-get_tandem_id_from_phenotype_id(phenotype_id = 8, tandem_seq = TRUE)
+get_tandem_id_from_phenotype_id(
+  phenotype_id = 8, tandem_seq = TRUE,
+  triplestore = triplestore
+)
 
 # More than one phenotype at seed_1
-get_tandem_id_from_phenotype_id(phenotype_id = c(2, 4, 8), seed_id = 1)
+get_tandem_id_from_phenotype_id(
+  phenotype_id = c(2, 4, 8), seed_id = 1,
+  triplestore = triplestore
+)
 
 # At seed_1 and seed_2
 get_tandem_id_from_phenotype_id(
   phenotype_id = 1,
   seed_id = c(1, 2),
-  tandem_pos = TRUE
+  tandem_pos = TRUE,
+  triplestore = triplestore
 )
 
 }

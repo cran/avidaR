@@ -7,7 +7,8 @@
 get_phenotype_id_from_transcriptome_id(
   transcriptome_id,
   seed_id = FALSE,
-  phenotype_binary = FALSE
+  phenotype_binary = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -21,25 +22,48 @@ FALSE (by default) returns only distinct data regardless of the seed.}
 
 \item{phenotype_binary}{Logical value (TRUE/FALSE) to show/hide phenotype in
 binary notation (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "seed_id" (optional),	"transcriptome_id",	"phenotype_id", "phenotype_binary" (optional)
 }
 \description{
-Get the phenotype encoded by the genome of a digital organism that executes a specific transcriptome for a list of seeds used for starting the pseudo-random number generator (i.e., a set of environments).
+Get the phenotype encoded by the genome of a digital organism
+that executes a specific transcriptome for a list of seeds used for starting
+the pseudo-random number generator (i.e., a set of environments).
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single transcriptome
-get_phenotype_id_from_transcriptome_id(transcriptome_id = 53674)
+get_phenotype_id_from_transcriptome_id(
+  transcriptome_id = 53674,
+  triplestore = triplestore
+)
 
 # More than one transcriptome
 get_phenotype_id_from_transcriptome_id(
   transcriptome_id = c(53674, 1666099),
-  phenotype_binary = TRUE
+  phenotype_binary = TRUE,
+  triplestore = triplestore
 )
 
 # At seed_1 and seed_3
-get_phenotype_id_from_transcriptome_id(transcriptome_id = 53674, seed_id = c(1,3))
+get_phenotype_id_from_transcriptome_id(
+  transcriptome_id = 53674, seed_id = c(1,3),
+  triplestore = triplestore
+)
 
 }

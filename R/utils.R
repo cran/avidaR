@@ -1,5 +1,11 @@
-all_at_seed <- c(0, 0)
-names(all_at_seed) <- c("encodes_at_seed_id", "executes_at_seed_id")
+#'
+#' @noRd
+#'
+all_at_seed <- function() {
+  seeds <- c(0, 0)
+  names(seeds) <- c("encodes_at_seed_id", "executes_at_seed_id")
+  return(seeds)
+}
 
 #' validate access_options
 #'
@@ -22,7 +28,7 @@ validate_access_options <- function(access_options = NULL) {
 validate_logic_operation <- function(logic_operation) {
   if (get_data_type(value = logic_operation) == 3) {
     if (logic_operation[1] != "") {
-        length_intersec <- length(Reduce(intersect, list(logic_operation, logic_operation_default)))
+        length_intersec <- length(Reduce(intersect, list(logic_operation, logic_operation_default())))
         length_default  <- length(logic_operation)
         if (length_intersec != length_default) {
           stop("Boolean operation not valid")
@@ -80,7 +86,7 @@ get_data_type <- function(value) {
 #' 
 replace_at_seed_id <- function(seed_id, at_seed_vars, query) {
   
-  all_at_seed_vars <- all_at_seed
+  all_at_seed_vars <- all_at_seed()
   names(all_at_seed_vars) <- gsub("_id","", names(all_at_seed_vars))
   
   if(isTRUE(seed_id)) {
@@ -163,7 +169,7 @@ replace_data <- function(param, value, query) {
     boolean_value <- "TRUE"
     if (length(value) == 1) {
       if (value == "") {
-        logic_operation <- logic_operation_default
+        logic_operation <- logic_operation_default()
         boolean_value <- "FALSE"
       }
     }
@@ -220,10 +226,10 @@ clean_at_seed_id <- function(data, seed_id, at_seed_vars){
   }
   
   for(this_at_seed in at_seed_vars) {
-    if(this_at_seed %in% names(all_at_seed) && this_at_seed %in% names(data)) {
+    if(this_at_seed %in% names(all_at_seed()) && this_at_seed %in% names(data)) {
       if(get_data_type(value = seed_id) == 2 || isTRUE(seed_id)) {
         data <- data %>% rename(seed_id = all_of(this_at_seed))
-        data <- data %>% rowwise() %>% mutate(seed_id = paste0("seed_", as.integer(seed_id) - as.integer(all_at_seed[this_at_seed][[1]])))
+        data <- data %>% rowwise() %>% mutate(seed_id = paste0("seed_", as.integer(seed_id) - as.integer(all_at_seed()[this_at_seed][[1]])))
       }      
     }
   }
@@ -262,8 +268,8 @@ show_hide_vars <- function(vars, query) {
 #' @noRd
 remove_prefix <- function(prefix, data) {
   # add _ to rdf_prefix
-  if(prefix == rdf_prefix)
-    prefix = paste0(rdf_prefix, "_") 
+  if(prefix == rdf_prefix())
+    prefix = paste0(rdf_prefix(), "_") 
  
   # Column names
   cols <- c("organism_id", "seed_id", "encodes_at_seed_id","executes_at_seed_id", "genome_id", "transcriptome_id", "tandem_id", "phenotype_id", "genome_id_ancestor", "genome_id_mutant", "organism_id_ancestor", "organism_id_mutant", "genome_id_wild_type", "genome_seq_wild_type")
@@ -343,42 +349,6 @@ decompress_sequence <- function(x) {
   return (memDecompress(base64enc::base64decode(what = x), "gzip", asChar=TRUE))
 }
 
-#' build_transcriptome_seq
-#'
-#' @param transcriptome_pos a string of character
-#' @param genome_seq a string of character
-#'
-#' @return character
-#'
-#' @noRd
-build_transcriptome_seq <- function(transcriptome_pos, genome_seq) {
-  # split transcriptome_pos
-  tp <- strsplit(transcriptome_pos, "\\|")[[1]]
-
-  # split genome_seq
-  gs <- strsplit(genome_seq, "")[[1]]
-
-  # Build transcriptome_seq
-  ts <- ""
-  for (pos in tp) {
-    ts <- paste0(ts, gs[as.integer(pos) + 1])
-  }
-
-  return(ts)
-}
-
-#' build_tandem_seq
-#'
-#' @param tandem_pos a string of character
-#' @param genome_seq a string of character
-#'
-#' @return character
-#'
-#' @noRd
-build_tandem_seq <- function(tandem_pos, genome_seq) {
-  return(build_transcriptome_seq(transcriptome_pos = tandem_pos, genome_seq = genome_seq))
-}
-
 #' logic_operation_to_binary
 #'
 #' @param logic_operation List of logical functions withing the following:
@@ -389,7 +359,7 @@ build_tandem_seq <- function(tandem_pos, genome_seq) {
 #'
 #' @noRd
 logic_operation_to_binary <- function(logic_operation) {
-  phenotype_binary <- paste(as.integer(logic_operation_default %in% logic_operation), collapse = "")
+  phenotype_binary <- paste(as.integer(logic_operation_default() %in% logic_operation), collapse = "")
 }
 
 #' logic_operation_to_integer
@@ -406,14 +376,163 @@ logic_operation_to_integer <- function(logic_operation) {
   return(integer_value)
 }
 
-#' build_phenotype_id_from_logic_operation
-#'
-#' @param logic_operation List of logical functions withing the following:
-#' "equals", "exclusive-or", "not-or", "and-not", "or", "orn-not", "and", 
-#' "not-and", "not".
-#'
-#' @return string of charactar
+capture_error <- function(code, otherwise = NULL, quiet = TRUE) {
+  tryCatch(
+    list(result = code, error = NULL),
+    error = function(e) {
+      if (!quiet)
+        message(e$message)
+      
+      list(result = otherwise, error = e)
+    },
+    interrupt = function(e) {
+      stop("Terminated by user", call. = FALSE)
+    }
+  )
+}
+
+safely <- function(.f, otherwise = NULL, quiet = TRUE) {
+  function(...) capture_error(.f(...), otherwise, quiet)
+}
+
+get_message_from_status_code <- function(status_code, url, repository) {
+  
+  status_message <- paste0(
+    "Server responded with status code '",
+    status_code,
+    " - ",
+    switch(
+      as.character(status_code),
+      "400" = "Bad request':\n- The server cannot process your request, check you provided a valid url and respository name.",
+      "401" = "Not authorized':\n- Please provide a valid user and password for access options.",
+      "403" = "Forbidden':",
+      "404" = "Not found':\n- Check that server url and repository name provided are valid and have a correct syntax.",
+      "500" = "Internal server error':",
+      "522" = "Connection timed out reached':\n- Check your network connection.\n- Some requests might require a high number of operations and, therefore, more time to be processed,\n  try requesting less elements and/or increasing timeout limit (seconds).",
+      "526" = "It seems that the server SSL certificate is not valid':",
+      "unknown':\n- Please, try in a few minutes."
+    )
+  )
+  
+  if (status_code == "500" || status_code == "403") {
+    if (endsWith(url, "/") == TRUE || grepl("/", repository) == TRUE) {
+      status_message <- paste0(
+        status_message,
+        "\n- Please, remove any extra '/' at the end of the server url and/or in repository name that might be causing such type of error.",
+        "\n- It could also be that you do not have the necessary privileges to access the requested resource."
+      )
+    }
+  }
+  
+  status_message <- paste0(
+    status_message,
+    "\n- If error persists, please contact server administrator."
+  )
+  
+  return(status_message)
+}
+
+server_no_response <- function(resource_url) {
+  return(
+    paste0(
+      "There is no response from server (", resource_url, "):\n",
+      "- The service might be temporarily unavailable or too busy. Please try again in a few minutes.\n",
+      "- Check that server url and repository name provided have a correct syntax.\n",
+      "- Please check you are connected to de network and can access any web site.\n",
+      "- If error persists, please contact to server administrator."
+    )
+  )
+}
+
+
+#' @description Server API POST method
+#' 
+#' @param url A single URL
+#' @param repository Repository name
+#' @param authentication what to do if the site exists but the
+#'        HTTP status code is not in the `2xx` range. Default is to return `FALSE`.
+#' @param quiet if not `FALSE`, then every time the `non_2xx_return_value` condition
+#'        arises a warning message will be displayed. Default is `FALSE`.
+#' @param max_seconds Number of seconds to consider a timeout scenario.
+#' #'
+#' @return data frame 
 #'
 #' @noRd
-build_phenotype_iri_from_logic_operation <- function(logic_operation)
-  return(paste0("ONTOAVIDA:phenotype_", logic_operation_to_integer(logic_operation)))
+server_api_post <- function(url, repository, authentication, query, quiet = FALSE, max_seconds = 20) {
+  
+  sPOST <- safely(httr::POST)
+  
+  resource_url <- paste0(url, "/repositories/", repository)
+  
+  res <- sPOST(
+    url = resource_url,
+    authentication,
+    httr::add_headers(Accept = "text/csv, */*;q=0.5"),
+    httr::add_headers('Content-Type' = "application/x-www-form-urlencoded; charset=utf-8"),
+    body = list(query = query),
+    encode = "form",
+    timeout(max_seconds)
+  )
+  
+  if (is.null(res$result) || ((httr::status_code(res$result) %/% 200) != 1)) {
+    
+    if (is.null(res$result)) {
+      if (!is.null(res$error) && grepl("imeout", res$err)) {
+        if (!quiet) stop(call. = FALSE, get_message_from_status_code(522, url, repository))
+      } else
+          stop(call. = FALSE, server_no_response(resource_url))
+    }
+      
+    
+    if (((httr::status_code(res$result) %/% 200) != 1)) {
+      if (!quiet) stop(call. = FALSE, get_message_from_status_code(httr::status_code(res$result), url, repository))
+    }
+    
+  } else {
+    return(utils::read.csv(textConnection(httr::content(res$result, as = "text")), stringsAsFactors = FALSE))
+  }
+  
+}
+
+#' @description Server API GET method.
+#' 
+#' @param url A single URL.
+#' @param resource Server resource to be requested.
+#' @param authentication what to do if the site exists but the
+#'        HTTP status code is not in the `2xx` range. Default is to return `FALSE`.
+#' @param quiet if not `FALSE`, then every time the `non_2xx_return_value` condition
+#'        arises a warning message will be displayed. Default is `FALSE`.
+#' @param max_seconds Number of seconds to consider a timeout scenario.
+#' #'
+#' @return String of character.
+#'
+#' @noRd
+server_api_get <- function(url, resource, authentication, quiet = FALSE, max_seconds = 20) {
+  
+  sGET <- safely(httr::GET)
+  
+  resource_url <- ""
+  
+  if (resource == "protocol")
+    resource_url <- paste0(url, "/protocol")
+  
+  res <- sGET(
+    url = resource_url,
+    config = authentication,
+    timeout(max_seconds)
+  )
+  
+  if (is.null(res$result) || ((httr::status_code(res$result) %/% 200) != 1)) {
+    
+    if (is.null(res$result))
+      stop(call. = FALSE, server_no_response(resource_url))
+    
+    if (((httr::status_code(res$result) %/% 200) != 1)) {
+      if (!quiet) stop(call. = FALSE, get_message_from_status_code(httr::status_code(res$result), url, resource))
+    }
+    
+  } else {
+    return(httr::content(res$result))
+  }
+  
+}

@@ -4,7 +4,11 @@
 \alias{get_genome_id_of_wild_type_organisms}
 \title{Get genomes of wild-type organisms}
 \usage{
-get_genome_id_of_wild_type_organisms()
+get_genome_id_of_wild_type_organisms(triplestore)
+}
+\arguments{
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame: "genome_id_wild_type".
@@ -16,6 +20,17 @@ get_mutant_at_pos.
 }
 \examples{
 
-get_genome_id_of_wild_type_organisms()
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
+get_genome_id_of_wild_type_organisms(triplestore = triplestore)
 
 }

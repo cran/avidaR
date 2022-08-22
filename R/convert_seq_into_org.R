@@ -18,8 +18,19 @@
 #' @return Data frame. Column names: "genome".
 #' 
 #' @examples
-#'  
-#' sequence <- get_genome_seq_from_genome_id(genome_id = 1)$genome_seq[[1]]
+#' 
+#' # Create triplestore object
+#' triplestore <- triplestore_access$new()
+#' 
+#' # Set access options
+#' triplestore$set_access_options(
+#'   url = "https://graphdb.fortunalab.org",
+#'   user = "public_avida",
+#'   password = "public_avida",
+#'   repository = "avidaDB_test"
+#' )
+#' 
+#' sequence <- get_genome_seq_from_genome_id(genome_id = 1, triplestore)$genome_seq[[1]]
 #' 
 #' convert_seq_into_org(genome_seq = sequence)
 #'
@@ -39,7 +50,7 @@ convert_seq_into_org <- function(genome_seq, save = FALSE, file_name = NULL, sav
   colnames(seq)[[1]] <- "letter"
 
   # join
-  org <- dplyr::inner_join(seq, instructions, by = "letter") %>% dplyr::select(.data$instruction)
+  org <- dplyr::inner_join(seq, instruction_set(), by = "letter") %>% dplyr::select(.data$instruction)
 
   # save to file
   if (isTRUE(save)) {

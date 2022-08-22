@@ -8,7 +8,8 @@ get_tandem_id_from_genome_seq(
   genome_seq,
   seed_id = FALSE,
   tandem_seq = FALSE,
-  tandem_pos = FALSE
+  tandem_pos = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ FALSE (by default) returns only distinct data regardless of the seed.}
 
 \item{tandem_pos}{Logical value (TRUE/FALSE) to show/hide this column
 (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Column: "seed_id" (optional), "genome_id", "tandem_id",
@@ -37,17 +41,39 @@ instruction codes that make up its genome.
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Get sequences for genomes 1 and 2
-sequence1 <- get_genome_seq_from_genome_id(1)$genome_seq
-sequence2 <- get_genome_seq_from_genome_id(2)$genome_seq
+sequence1 <- get_genome_seq_from_genome_id(
+  1,
+  triplestore = triplestore
+)$genome_seq
+
+sequence2 <- get_genome_seq_from_genome_id(
+  2,
+  triplestore = triplestore
+)$genome_seq
 
 # Single genome
-get_tandem_id_from_genome_seq(genome_seq = sequence1)
+get_tandem_id_from_genome_seq(
+  genome_seq = sequence1,
+  triplestore = triplestore
+ )
 
 # More than one genome
 get_tandem_id_from_genome_seq(
   genome_seq = c(sequence1, sequence2),
-  tandem_seq = TRUE
+  tandem_seq = TRUE,
+  triplestore = triplestore
 )
 
 # At seed_1 and seed_2
@@ -55,7 +81,8 @@ get_tandem_id_from_genome_seq(
   genome_seq = sequence2,
   seed_id = c(1,2),
   tandem_seq = TRUE,
-  tandem_pos = TRUE
+  tandem_pos = TRUE,
+  triplestore = triplestore
 )
 
 }

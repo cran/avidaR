@@ -1,13 +1,24 @@
 test_that("get_phenotype_id_from_transcriptome_id", {
-
+  
+  triplestore <- triplestore_access$new()
+  
+  triplestore$set_access_options(
+    url = "https://graphdb.fortunalab.org",
+    user = "public_avida",
+    password = "public_avida",
+    repository = "avidaDB_test"
+  )
+  
   found1 <- get_phenotype_id_from_transcriptome_id(
-    transcriptome_id = 53674
+    transcriptome_id = 53674,
+    triplestore = triplestore
   )
 
   found2 <- get_phenotype_id_from_transcriptome_id(
     transcriptome_id = c(53674, 1666099),
     seed_id = c(2, 1),
-    phenotype_binary = TRUE
+    phenotype_binary = TRUE,
+    triplestore = triplestore
   )
 
   expect_match(class(found1), "data.frame")

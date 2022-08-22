@@ -7,7 +7,8 @@
 get_phenotype_id_from_genome_id(
   genome_id,
   seed_id = FALSE,
-  phenotype_binary = FALSE
+  phenotype_binary = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -21,6 +22,9 @@ FALSE (by default) returns only distinct data regardless of the seed.}
 
 \item{phenotype_binary}{Logical value (TRUE/FALSE) to show/hide phenotype_id
 in binary notation (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "seed_id" (optional), "genome_id",
@@ -33,17 +37,33 @@ for a list of seeds used for starting the pseudo-random number generator
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single genome
-get_phenotype_id_from_genome_id(genome_id = 1)
+get_phenotype_id_from_genome_id(genome_id = 1, triplestore = triplestore)
 
 # More than one genome at seed_1
-get_phenotype_id_from_genome_id(genome_id = c(1, 2, 3), seed_id = 1)
+get_phenotype_id_from_genome_id(
+  genome_id = c(1, 2, 3),
+  seed_id = 1,
+  triplestore = triplestore
+)
 
 # More than one genome at more than one seed (e.g., seed_3 and seed_4)
 get_phenotype_id_from_genome_id(
   genome_id = 1,
   seed_id = c(3, 4),
-  phenotype_binary = TRUE
+  phenotype_binary = TRUE,
+  triplestore = triplestore
 )
 
 }

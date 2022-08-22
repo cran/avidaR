@@ -8,7 +8,8 @@ get_tandem_seq_from_tandem_id(
   tandem_id,
   seed_id = FALSE,
   genome_id = FALSE,
-  tandem_pos = FALSE
+  tandem_pos = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -26,6 +27,9 @@ the seed.}
 
 \item{tandem_pos}{Logical value (TRUE/FALSE) to show/hide this column
 (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "seed_id" (optional), "tandem_id", "tandem_seq",
@@ -38,12 +42,28 @@ the pseudo-random number generator (i.e., a set of environments).
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single tandem
-get_tandem_seq_from_tandem_id(tandem_id = 6336945)
+get_tandem_seq_from_tandem_id(
+  tandem_id = 6336945,
+  triplestore = triplestore
+)
 
 # More than one tandem at seed_1
-get_tandem_seq_from_tandem_id(tandem_id = c(6336945, 2520963, 2520963),
-                              seed_id = 1
+get_tandem_seq_from_tandem_id(
+  tandem_id = c(6336945, 2520963, 2520963),
+  seed_id = 1,
+  triplestore = triplestore
 )
 
 # At seed_3 and seed_5
@@ -51,7 +71,8 @@ get_tandem_seq_from_tandem_id(
   tandem_id = 6336945,
   seed_id = c(1, 3),
   tandem_pos = TRUE,
-  genome_id = TRUE
+  genome_id = TRUE,
+  triplestore = triplestore
 )
 
 }

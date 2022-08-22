@@ -5,38 +5,58 @@
 #' (i.e., a set of environments).
 #'
 #' @param transcriptome_id Integer
+#' 
 #' @param seed_id Integer (from 1 to 1000), a vector of integer values, or a
 #' logical value. This integer is used for starting the pseudo-random number
 #' generator that represents the environment experiencing a digital organism.
 #' If a logical value is used, TRUE returns data found in all environments and
 #' FALSE (by default) returns only distinct data regardless of the seed.
+#' 
 #' @param save Logical value (TRUE/FALSE) to save the plot (FALSE by default).
+#' 
 #' @param file_name String of characters indicating the name of the file to be
 #' saved (without extension).
+#' 
 #' @param save_path String of characters indicating the name of the folder where
 #' the file will be saved.
+#' 
 #' @param format String of characters indicating the format of the file ("pdf"
 #' and "svg" are currently supported).
+#' 
 #' @param silent Logical value (TRUE/FALSE) to show/hide messages (TRUE by
 #' default).
 #' 
+#' @param triplestore Object of class triplestore_access which manages database
+#' access.
+#' 
 #' @examples
 #' \donttest{
+#' 
+#' # Create triplestore object
+#' triplestore <- triplestore_access$new()
+#' 
+#' # Set access options
+#' triplestore$set_access_options(
+#'   url = "https://graphdb.fortunalab.org",
+#'   user = "public_avida",
+#'   password = "public_avida",
+#'   repository = "avidaDB_test"
+#' )
+#' 
 #' # plot transcriptome 53674 at seed_1 and save to disk in pdf format
 #' plot_transcriptome(
 #'   transcriptome_id = 53674,
 #'   seed_id = 1,
 #'   save = FALSE,
 #'   save_path = getwd(),
-#'   format = "pdf"
+#'   format = "pdf",
+#'   triplestore = triplestore
 #' )
 #' }
 #' @importFrom grDevices dev.off graphics.off pdf svg
 #'
 #' @export
-plot_transcriptome <- function(transcriptome_id, seed_id = NULL, save = FALSE, file_name = NULL, save_path = "~/transcriptome@chords", format = "svg", silent = FALSE) {
-  # Validate access_options
-  #validate_access_options(access_options = access_options)
+plot_transcriptome <- function(transcriptome_id, seed_id = NULL, save = FALSE, file_name = NULL, save_path = "~/transcriptome@chords", format = "svg", silent = FALSE, triplestore) {
 
   # Verify output directory
   if (isTRUE(save)) {
@@ -53,9 +73,9 @@ plot_transcriptome <- function(transcriptome_id, seed_id = NULL, save = FALSE, f
 
   # Get data
   if (is.null(seed_id)) {
-    data <- get_transcriptome_seq_from_transcriptome_id(transcriptome_id = transcriptome_id, seed_id = FALSE, transcriptome_pos = TRUE, genome_seq=TRUE)[1, ]
+    data <- get_transcriptome_seq_from_transcriptome_id(transcriptome_id = transcriptome_id, seed_id = FALSE, transcriptome_pos = TRUE, genome_seq=TRUE, triplestore = triplestore)[1, ]
   } else {
-    data <- get_transcriptome_seq_from_transcriptome_id(transcriptome_id = transcriptome_id, seed_id = seed_id, transcriptome_pos = TRUE, genome_seq=TRUE)
+    data <- get_transcriptome_seq_from_transcriptome_id(transcriptome_id = transcriptome_id, seed_id = seed_id, transcriptome_pos = TRUE, genome_seq=TRUE, triplestore = triplestore)
   }
 
   if (nrow(data) > 0) {
@@ -63,7 +83,7 @@ plot_transcriptome <- function(transcriptome_id, seed_id = NULL, save = FALSE, f
     genome_vector <- dplyr::tibble(letter = strsplit(as.character(data$genome_seq), "")[[1]])
 
     # Get instruction and color of genome_seq letters
-    inst_genome <- dplyr::inner_join(genome_vector, instructions, by = "letter") %>% dplyr::mutate(pos = dplyr::row_number() - 1)
+    inst_genome <- dplyr::inner_join(genome_vector, instruction_set(), by = "letter") %>% dplyr::mutate(pos = dplyr::row_number() - 1)
 
     # Change transcript_pos format to a column vector
     transcript_vector <- dplyr::tibble(letter = strsplit(as.character(data$transcriptome_pos), "[|]")[[1]])

@@ -7,7 +7,8 @@
 get_genome_id_from_transcriptome_id(
   transcriptome_id,
   seed_id = FALSE,
-  genome_seq = FALSE
+  genome_seq = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -21,6 +22,9 @@ FALSE (by default) returns only distinct data regardless of the seed.}
 
 \item{genome_seq}{Logical value (TRUE/FALSE) to show/hide this column
 ("FALSE" by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "seed_id" (optional), "transcriptome_id",
@@ -33,19 +37,35 @@ generator (i.e., a set of environments).
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single transcriptome
-get_genome_id_from_transcriptome_id(transcriptome_id = 1)
+get_genome_id_from_transcriptome_id(
+  transcriptome_id = 1,
+  triplestore = triplestore
+)
 
 # More than one transcriptome
 get_genome_id_from_transcriptome_id(
   transcriptome_id = c(1, 2, 3),
-  genome_seq = TRUE
+  genome_seq = TRUE,
+  triplestore = triplestore
 )
 
 # At seed_1 and seed_2
 get_genome_id_from_transcriptome_id(
   transcriptome_id = 1,
-  seed_id = c(1, 2)
+  seed_id = c(1, 2),
+  triplestore = triplestore
 )
 
 }

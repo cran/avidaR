@@ -4,7 +4,11 @@
 \alias{get_db_summary}
 \title{Get database summary}
 \usage{
-get_db_summary()
+get_db_summary(triplestore)
+}
+\arguments{
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame: Columns: "data type", "value".
@@ -14,6 +18,15 @@ Get a summary of the data stored.
 }
 \examples{
 
-get_db_summary()
+triplestore <- triplestore_access$new()
+
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
+get_db_summary(triplestore)
 
 }

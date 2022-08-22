@@ -1,12 +1,23 @@
 test_that("get_logic_operation_from_phenotype", {
 
+  triplestore <- triplestore_access$new()
+  
+  triplestore$set_access_options(
+    url = "https://graphdb.fortunalab.org",
+    user = "public_avida",
+    password = "public_avida",
+    repository = "avidaDB_test"
+  )
+  
   found1 <- get_logic_operation_from_phenotype_id(
-    phenotype_id = 511
+    phenotype_id = 511,
+    triplestore = triplestore
   )
 
   found2 <- get_logic_operation_from_phenotype_id(
     phenotype_id = c(1, 3),
-    phenotype_binary = TRUE
+    phenotype_binary = TRUE,
+    triplestore = triplestore
   )
 
   expect_match(class(found1), "data.frame")

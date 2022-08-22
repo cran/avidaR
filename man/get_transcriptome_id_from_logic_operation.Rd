@@ -8,7 +8,8 @@ get_transcriptome_id_from_logic_operation(
   logic_operation,
   seed_id = sample(1:1000, 1),
   transcriptome_seq = FALSE,
-  transcriptome_pos = FALSE
+  transcriptome_pos = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -27,6 +28,9 @@ is not specified, it returns data for a single randomly chosen seed_id value
 
 \item{transcriptome_pos}{Logical value (TRUE/FALSE) to show/hide this column
 (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "seed_id" (optional), "transcriptome_id",
@@ -39,13 +43,28 @@ starting the pseudo-random number generator (i.e., a set of environments).
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single logic operation
-get_transcriptome_id_from_logic_operation(logic_operation = "not")
+get_transcriptome_id_from_logic_operation(
+  logic_operation = "not",
+  triplestore = triplestore
+)
 
 # More than one logic operation
 get_transcriptome_id_from_logic_operation(
   logic_operation = c("not", "and"),
-  transcriptome_seq = TRUE
+  transcriptome_seq = TRUE,
+  triplestore = triplestore
 )
 
 # At seed_1 and seed_2
@@ -53,7 +72,8 @@ get_transcriptome_id_from_logic_operation(
   logic_operation = c("not", "and"),
   seed_id = c(1,2),
   transcriptome_seq = TRUE,
-  transcriptome_pos = TRUE
+  transcriptome_pos = TRUE,
+  triplestore = triplestore
 )
 
 }

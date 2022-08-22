@@ -8,7 +8,8 @@ get_mutant_at_pos(
   genome_id = NULL,
   inst_replaced = NULL,
   inst_replaced_by = NULL,
-  pos = NULL
+  pos = NULL,
+  triplestore
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ it will return the mutations located on all positions).}
 along the genome of a digital organism (from 1 to 100 for a genome length of
 100 instructions). If not specified, the function will return all
 single-point mutants of the genome of the wild-type organism.}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame: Columns: "genome_id_wild_type", "genome_seq_wild_type",
@@ -49,9 +53,22 @@ and its single-point mutants.
 }
 \examples{
 
-get_mutant_at_pos(genome_id = 582,
-                  inst_replaced = 'o', 
-                  inst_replaced_by = 'a',
-                  pos = 1)
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
+get_mutant_at_pos(
+  genome_id = 582,
+  inst_replaced = 'o', 
+  inst_replaced_by = 'a',
+  pos = 1,
+  triplestore = triplestore)
 
 }

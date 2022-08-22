@@ -7,7 +7,8 @@
 get_genome_id_from_phenotype_id(
   phenotype_id,
   seed_id = sample(1:1000, 1),
-  genome_seq = FALSE
+  genome_seq = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -21,6 +22,9 @@ is not specified, it returns data for a single randomly chosen seed_id value
 
 \item{genome_seq}{Logical value (TRUE/FALSE) to show/hide this column
 ("FALSE" by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "seed_id" (optional), "phenotype_id",
@@ -33,13 +37,32 @@ generator (i.e., a set of environments).
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single phenotype
-get_genome_id_from_phenotype_id(phenotype_id = 1)
+get_genome_id_from_phenotype_id(phenotype_id = 1, triplestore = triplestore)
 
 # More than one phenotype
-get_genome_id_from_phenotype_id(phenotype_id = c(1, 2), genome_seq = TRUE)
+get_genome_id_from_phenotype_id(
+  phenotype_id = c(1, 2),
+  genome_seq = TRUE,
+  triplestore = triplestore
+)
 
 # At seeds_4 and seed_5
-get_genome_id_from_phenotype_id(phenotype_id = c(1, 2), seed_id = c(4, 5))
+get_genome_id_from_phenotype_id(
+  phenotype_id = c(1, 2),
+  seed_id = c(4, 5),
+  triplestore = triplestore
+)
 
 }

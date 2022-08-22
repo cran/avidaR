@@ -29,28 +29,44 @@
 #' 100 instructions). If not specified, the function will return all
 #' single-point mutants of the genome of the wild-type organism.
 #' 
+#' @param triplestore Object of class triplestore_access which manages database
+#' access.
+#' 
 #' @return Data frame: Columns: "genome_id_wild_type", "genome_seq_wild_type",
 #' "genome_id_mutant", genome_seq_mutant", "pos".
 #' 
 #' @examples 
 #' 
-#' get_mutant_at_pos(genome_id = 582,
-#'                   inst_replaced = 'o', 
-#'                   inst_replaced_by = 'a',
-#'                   pos = 1)
+#' # Create triplestore object
+#' triplestore <- triplestore_access$new()
+#' 
+#' # Set access options
+#' triplestore$set_access_options(
+#'   url = "https://graphdb.fortunalab.org",
+#'   user = "public_avida",
+#'   password = "public_avida",
+#'   repository = "avidaDB_test"
+#' )
+#' 
+#' get_mutant_at_pos(
+#'   genome_id = 582,
+#'   inst_replaced = 'o', 
+#'   inst_replaced_by = 'a',
+#'   pos = 1,
+#'   triplestore = triplestore)
 #'
 #' @export
 
-get_mutant_at_pos <- function(genome_id = NULL, inst_replaced = NULL, inst_replaced_by = NULL, pos = NULL) {
+get_mutant_at_pos <- function(genome_id = NULL, inst_replaced = NULL, inst_replaced_by = NULL, pos = NULL, triplestore) {
   # Generate genome_id sample
   if (is.null(genome_id)){
-    genome_ids <- get_genome_id_of_wild_type_organisms()
+    genome_ids <- get_genome_id_of_wild_type_organisms(triplestore = triplestore)
     if (genome_ids %>% nrow() >0)
       genome_id <- as.numeric(gsub("genome_", "", (genome_ids %>% sample_n(1))[1]$genome_id_wild_type))
   }
   
   # Get genome sequence
-  genome_seq <- get_genome_seq_from_genome_id(genome_id)$genome_seq[1]
+  genome_seq <- get_genome_seq_from_genome_id(genome_id, triplestore = triplestore)$genome_seq[1]
   
   # Validate params
   validate_param(param = "genome_id", value = genome_id, types = 2)
@@ -67,10 +83,10 @@ get_mutant_at_pos <- function(genome_id = NULL, inst_replaced = NULL, inst_repla
   }
   
   # Build sparql query
-  query <- paste0("PREFIX ONTOAVIDA: <", ontoavida_prefix, ">\n",
+  query <- paste0("PREFIX ONTOAVIDA: <", ontoavida_prefix(), ">\n",
                   "PREFIX RO: <http://purl.obolibrary.org/obo/RO_>\n",
                   "PREFIX GSSO: <http://purl.obolibrary.org/obo/GSSO_>\n",
-                  "PREFIX rdf: <", rdf_prefix, ">\n",
+                  "PREFIX rdf: <", rdf_prefix(), ">\n",
                   "SELECT distinct ?genome_id_wild_type ?genome_seq_wild_type ?genome_id_mutant ?genome_seq_mutant ?pos WHERE {\n",
                   "    # organism mutant of ancestor\n",
                   "    ?organism_id_mutant rdf:type GSSO:009994 .\n",
@@ -117,7 +133,7 @@ get_mutant_at_pos <- function(genome_id = NULL, inst_replaced = NULL, inst_repla
   
   if (nrow(response) > 0) {
     # Remove prefixes
-    response <- remove_prefix(prefix = ontoavida_prefix, data = response)
+    response <- remove_prefix(prefix = ontoavida_prefix(), data = response)
   }
   
   # Return response

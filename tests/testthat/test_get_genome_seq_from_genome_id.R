@@ -1,7 +1,17 @@
 test_that("get_genome_seq_from_genome_id", {
 
+  triplestore <- triplestore_access$new()
+  
+  triplestore$set_access_options(
+    url = "https://graphdb.fortunalab.org",
+    user = "public_avida",
+    password = "public_avida",
+    repository = "avidaDB_test"
+  )
+  
   found1 <- get_genome_seq_from_genome_id(
-    genome_id = 1
+    genome_id = 1,
+    triplestore = triplestore
   )
 
   expect_match(class(found1), "data.frame")

@@ -45,9 +45,13 @@ library(avidaR)
 
 avidaDB is a semantic database (or triple-store) on genomes and transcriptomes of more a million digital organisms stored as RDF data. It allows querying data using the [SPARQL query language](https://www.w3.org/TR/rdf-sparql-query/). The library avidaR can connect to triple-stores that support the [RDF4J server REST API](https://rdf4j.org/documentation/reference/rest-api/) such as [GraphDB](https://graphdb.ontotext.com/). Since avidaDB is implemented in GraphDB, a basic connection (requiring no password or requiring basic HTTP user-pass authentication) or a connection secured with an API access token can be established.
 
-Once avidaR is loaded, it points by default to a small subset of the database (avidaDB_test) for testing purposes (show the current access options by running `triplestore$access_options()`). Please, change the name of the repository from avidaDB_test to avidaDB to get access to the entire database by running:
+avidaR provides a `triplestore_access` class to manage access options and retrieve data through the database server API. In order to get access to the entire database, you should first create the `triplestore` object and run the `set_access_options()` method as follows:
 
 ``` r
+# create object of class triplestore_access
+triplestore <- triplestore_access$new()
+
+# set access options do avidaDB
 triplestore$set_access_options(
     url = "https://graphdb.fortunalab.org",
     user = "public_avida",
@@ -60,13 +64,13 @@ triplestore$set_access_options(
 The following function can be used to get the genome sequence of a single genome (e.g., genome_id = 1):
 
 ```  r
-get_genome_seq_from_genome_id(genome_id = 1)
+get_genome_seq_from_genome_id(genome_id = 1, triplestore = triplestore)
 ```
 
 or to get the genome sequences of multiple genomes at once:
 
 ```  r
-get_genome_seq_from_genome_id(genome_id = c(1, 2, 3))
+get_genome_seq_from_genome_id(genome_id = c(1, 2, 3), triplestore = triplestore)
 ```
 
 Please, use the R help command to get more details about any specific function by writing the name of the function preceded by the symbol `?`:
@@ -115,6 +119,8 @@ Please, use the R help command to get more details about any specific function b
 
 ### Miscellaneous functions:
 
+- `get_db_summary()`
+- `get_genome_id_of_wild_type_organisms()`
 - `get_mutant_at_pos()`
 - `convert_seq_into_org()`
 - `plot_transcriptome()`

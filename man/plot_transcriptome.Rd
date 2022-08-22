@@ -11,7 +11,8 @@ plot_transcriptome(
   file_name = NULL,
   save_path = "~/transcriptome@chords",
   format = "svg",
-  silent = FALSE
+  silent = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -36,6 +37,9 @@ and "svg" are currently supported).}
 
 \item{silent}{Logical value (TRUE/FALSE) to show/hide messages (TRUE by
 default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \description{
 Get a plot of the transcriptome executed by a digital organism
@@ -44,13 +48,26 @@ for a list of seeds used for starting the pseudo-random number generator
 }
 \examples{
 \donttest{
+
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # plot transcriptome 53674 at seed_1 and save to disk in pdf format
 plot_transcriptome(
   transcriptome_id = 53674,
   seed_id = 1,
   save = FALSE,
   save_path = getwd(),
-  format = "pdf"
+  format = "pdf",
+  triplestore = triplestore
 )
 }
 }

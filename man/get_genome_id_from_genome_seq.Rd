@@ -4,10 +4,13 @@
 \alias{get_genome_id_from_genome_seq}
 \title{Get genome from genome sequence}
 \usage{
-get_genome_id_from_genome_seq(genome_seq)
+get_genome_id_from_genome_seq(genome_seq, triplestore)
 }
 \arguments{
 \item{genome_seq}{String of letters or a list of strings}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "genome_id" "genome_seq"
@@ -17,10 +20,28 @@ Get the genome of a digital organism from the linear string of
 letters representing the instruction codes that make up its genome.
 }
 \examples{
-# Get sequence for genome_1
-sequence <- get_genome_seq_from_genome_id(genome_id = 1)$genome_seq[1]
 
-#
-get_genome_id_from_genome_seq(genome_seq = sequence)
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
+# Get sequence for genome_1
+sequence <- get_genome_seq_from_genome_id(
+  genome_id = 1,
+  triplestore = triplestore
+)$genome_seq[1]
+
+# Get genome id from sequence
+get_genome_id_from_genome_seq(
+  genome_seq = sequence,
+  triplestore = triplestore
+)
 
 }

@@ -15,26 +15,47 @@
 #' @param genome_seq Logical value (TRUE/FALSE) to show/hide this column
 #' ("FALSE" by default).
 #' 
+#' @param triplestore Object of class triplestore_access which manages database
+#' access.
+#'  
 #' @examples
 #' 
+#' # Create triplestore object
+#' triplestore <- triplestore_access$new()
+#' 
+#' # Set access options
+#' triplestore$set_access_options(
+#'   url = "https://graphdb.fortunalab.org",
+#'   user = "public_avida",
+#'   password = "public_avida",
+#'   repository = "avidaDB_test"
+#' )
+#' 
 #' # Single logic operation
-#' get_genome_id_from_logic_operation(logic_operation = "not-or")
+#' get_genome_id_from_logic_operation(
+#'   logic_operation = "not-or",
+#'   triplestore = triplestore
+#' )
 #' 
 #' # More than one logic operation
-#' get_genome_id_from_logic_operation(logic_operation = c("not", "not-and"))
+#' get_genome_id_from_logic_operation(
+#'   logic_operation = c("not", "not-and"),
+#'   triplestore = triplestore
+#' )
 #' 
 #' # At seed_1
 #' get_genome_id_from_logic_operation(
 #'   logic_operation = c("or", "equals", "and"),
 #'   seed_id = 1,
-#'   genome_seq = TRUE
+#'   genome_seq = TRUE,
+#'   triplestore = triplestore
 #' )
 #'
 #' @return Data frame. Columns: "seed_id" (optional), "genome_id", "genome_seq" (optional).
 #'
 #' @export
 
-get_genome_id_from_logic_operation <- function(logic_operation, seed_id = sample(1:1000, 1), genome_seq = FALSE) {
+get_genome_id_from_logic_operation <- function(logic_operation, seed_id = sample(1:1000, 1), genome_seq = FALSE, triplestore) {
   # Validate logic_opretation
   validate_logic_operation(logic_operation)
 
@@ -46,7 +67,7 @@ get_genome_id_from_logic_operation <- function(logic_operation, seed_id = sample
   phenotype_id <- logic_operation_to_integer(logic_operation)
   
   # Submit query by calling get_genome_id_from_phenotype_id() function
-  response <- get_genome_id_from_phenotype_id(phenotype_id = phenotype_id, seed_id = seed_id, genome_seq = genome_seq)
+  response <- get_genome_id_from_phenotype_id(phenotype_id = phenotype_id, seed_id = seed_id, genome_seq = genome_seq, triplestore = triplestore)
   
   response <- show_hide_columns(c("phenotype_id" = FALSE), response)
 

@@ -1,13 +1,24 @@
 test_that("get_tandem_seq_from_tandem_id", {
 
-    found1 <- get_tandem_seq_from_tandem_id(
-    tandem_id = 87873
+  triplestore <- triplestore_access$new()
+  
+  triplestore$set_access_options(
+    url = "https://graphdb.fortunalab.org",
+    user = "public_avida",
+    password = "public_avida",
+    repository = "avidaDB_test"
+  )
+  
+  found1 <- get_tandem_seq_from_tandem_id(
+    tandem_id = 87873,
+    triplestore = triplestore
   )
 
   found2 <- get_tandem_seq_from_tandem_id(
     tandem_id = c(87873, 388401),
     seed_id = c(2,1),
-    tandem_pos = TRUE
+    tandem_pos = TRUE,
+    triplestore = triplestore
   )
 
   expect_match(class(found1), "data.frame")

@@ -3,6 +3,7 @@ ANDN
 avida
 avidaDB
 circlize
+cloneable
 CSIC
 devtools
 dplyr
@@ -36,3 +37,4 @@ transcriptome
 transcriptomes
 transcriptomic
 triplestore
+versionIRI

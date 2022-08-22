@@ -8,7 +8,8 @@ get_phenotype_id_from_genome_seq(
   genome_seq,
   seed_id = FALSE,
   genome_id = FALSE,
-  phenotype_binary = FALSE
+  phenotype_binary = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -26,6 +27,9 @@ default).}
 
 \item{phenotype_binary}{Logical value (TRUE/FALSE) to show/hide phenotype_id
 in binary notation (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "seed_id" (optional), "genome_id" (optional),
@@ -38,21 +42,47 @@ starting the pseudo-random number generator (i.e., a set of environments).
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Get sequences for genomes_1 and genome_2
-sequence1 <- get_genome_seq_from_genome_id(genome_id = 1)$genome_seq[1]
-sequence2 <- get_genome_seq_from_genome_id(genome_id = 2)$genome_seq[1]
+sequence1 <- get_genome_seq_from_genome_id(
+  genome_id = 1,
+  triplestore = triplestore
+)$genome_seq[1]
+
+sequence2 <- get_genome_seq_from_genome_id(
+  genome_id = 2,
+  triplestore = triplestore
+)$genome_seq[1]
 
 # Single genome
-get_phenotype_id_from_genome_seq(genome_seq = sequence1)
+get_phenotype_id_from_genome_seq(
+  genome_seq = sequence1,
+  triplestore = triplestore
+)
 
 # More than one genome
 get_phenotype_id_from_genome_seq(
   genome_seq = c(sequence1, sequence2),
   genome_id = TRUE,
-  phenotype_binary = TRUE
+  phenotype_binary = TRUE,
+  triplestore = triplestore
 )
 
 # At seed_1 and seed_2
-get_phenotype_id_from_genome_seq(genome_seq = sequence2, seed_id = c(1, 2))
+get_phenotype_id_from_genome_seq(
+  genome_seq = sequence2,
+  seed_id = c(1, 2),
+  triplestore = triplestore
+)
 
 }

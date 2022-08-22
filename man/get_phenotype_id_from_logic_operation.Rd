@@ -6,7 +6,8 @@
 \usage{
 get_phenotype_id_from_logic_operation(
   logic_operation,
-  phenotype_binary = FALSE
+  phenotype_binary = FALSE,
+  triplestore
 )
 }
 \arguments{
@@ -15,6 +16,9 @@ get_phenotype_id_from_logic_operation(
 "not-and", "not".}
 
 \item{phenotype_binary}{Logical value (TRUE/FALSE) to show/hide the phenotype in binary notation (FALSE by default).}
+
+\item{triplestore}{Object of class triplestore_access which manages database
+access.}
 }
 \value{
 Data frame. Columns: "phenotype_id", "phenotype_binary" (optional).
@@ -24,14 +28,30 @@ Get the phenotype encoded by the genome of a digital organism that is specified 
 }
 \examples{
 
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
 # Single logic operation
-get_phenotype_id_from_logic_operation(logic_operation = "not-or")
+get_phenotype_id_from_logic_operation(
+  logic_operation = "not-or",
+  triplestore = triplestore
+)
 
 # More than one logic operation
 ops <- c("equals", "exclusive or", "not-or", "and-not", "or", "orn-not")
+
 get_phenotype_id_from_logic_operation(
   logic_operation = ops,
-  phenotype_binary = TRUE
+  phenotype_binary = TRUE,
+  triplestore = triplestore
 )
 
 }

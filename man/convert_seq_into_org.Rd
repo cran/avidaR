@@ -39,8 +39,19 @@ Converts a genome instruction sequence into a digital organism
 file.
 }
 \examples{
- 
-sequence <- get_genome_seq_from_genome_id(genome_id = 1)$genome_seq[[1]]
+
+# Create triplestore object
+triplestore <- triplestore_access$new()
+
+# Set access options
+triplestore$set_access_options(
+  url = "https://graphdb.fortunalab.org",
+  user = "public_avida",
+  password = "public_avida",
+  repository = "avidaDB_test"
+)
+
+sequence <- get_genome_seq_from_genome_id(genome_id = 1, triplestore)$genome_seq[[1]]
 
 convert_seq_into_org(genome_seq = sequence)
 

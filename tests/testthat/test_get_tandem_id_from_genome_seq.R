@@ -1,24 +1,36 @@
 test_that("get_tandem_id_from_genome_seq", {
 
+  triplestore <- triplestore_access$new()
+  
+  triplestore$set_access_options(
+    url = "https://graphdb.fortunalab.org",
+    user = "public_avida",
+    password = "public_avida",
+    repository = "avidaDB_test"
+  )
+  
   sequence1 <- "acksdblwxnlhuxpjfmhcowivenwrcepkpwhcsdxzobuicloefcpsxpmovktqodgtpzursjelhdfxayfcvtdsqbloizzfgxypwoza"
   sequence2 <- "wakkoarhimcntsprxhcwpxvdvixzqkeezetmyvuvnwlxatoldiimqgtslvutvnquxefucqmkearisdaogqzbdywpbenlhdtwawtd"
 
   found1 <- get_tandem_id_from_genome_seq(
-    genome_seq = sequence1
+    genome_seq = sequence1,
+    triplestore = triplestore
   )
 
   found2 <- get_tandem_id_from_genome_seq(
     genome_seq = c(sequence1, sequence2),
     seed_id = c(2,1),
     tandem_seq = TRUE,
-    tandem_pos = FALSE
+    tandem_pos = FALSE,
+    triplestore = triplestore
   )
 
   found3 <- get_tandem_id_from_genome_seq(
     genome_seq = c(sequence1, sequence2),
     seed_id = c(2,1),
     tandem_seq = FALSE,
-    tandem_pos = TRUE
+    tandem_pos = TRUE,
+    triplestore = triplestore
   )
 
   expect_match(class(found1), "data.frame")

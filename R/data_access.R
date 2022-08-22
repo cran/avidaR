@@ -1,10 +1,50 @@
+#' Class to manage triplestore access options
+#'
+#' @description Class to manage triplestore access options
+#' 
+#' @examples 
+#' 
+#' # Create object triplestore
+#' 
+#' triplestore <- triplestore_access$new()
+#' 
+#' 
+#' # Set options to access a specific triple-store implemented in GraphDB
+#' 
+#' triplestore$set_access_options(
+#'   url = "https://graphdb.fortunalab.org",
+#'   user = "public_avida",
+#'   password = "public_avida",
+#'   repository = "avidaDB_test"
+#' )
+#' 
+#' 
+#'# Show current access options
+#'
+#'triplestore$get_access_options()
+#'
+#'
+#'# Querying data with SPARQL
+#'
+#'triplestore$submit_query('PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+#'                           PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+#'                           select ?tandem_id where { 
+#'                             ?digital_tandem_repeat rdfs:label "digital tandem repeat"@en .
+#'                             ?tandem_id a ?digital_tandem_repeat .
+#'                           } limit 10')
+#'
+#'
+#'# Show ontology info
+#'
+#'triplestore$ontology()
+#'
+#' 
 #' @import R6
 #' @import httr
 #' @import xml2
-#' 
-
-# Class to manage triplestore access options
-triplestore_access = R6::R6Class(
+#'
+#' @export
+triplestore_access <- R6::R6Class(
   classname = "triplestore_access",
   private = list(
     url = NULL,
@@ -13,39 +53,65 @@ triplestore_access = R6::R6Class(
     repository = NULL,
     authentication = NULL,
     protocol = NULL,
+    timeout = NULL,
     ontology_title = NULL,
     ontology_description = NULL,
     ontology_versionIRI = NULL
   ),
   public = list(
+    #'
+    #' @description Create and initialize the object.
+    #' 
+    #' @return Object of class triplestore_access.
+    #' 
     initialize = function() {
       private$url = NULL
       private$user = NULL
       private$password = NULL
       private$repository = NULL
       private$authentication = NULL
+      private$protocol = NULL
+      private$timeout = NULL
       private$ontology_title = NULL
       private$ontology_description = NULL
       private$ontology_versionIRI = NULL
     },
-    access_options = function() {
-      return(list(
-        url = private$url,
-        user = private$user,
-        password = private$password,
-        repository = private$repository,
-        authentication = private$authentication,
-        protocol = private$protocol
-      )
+    #'
+    #' @description Get access options
+    #' 
+    #' @return list containing URL of the API server, user credentials,
+    #' repository name, authentication status, and SPARQL protocol version
+    #' 
+    get_access_options = function() {
+      return(
+        list(
+          url = private$url,
+          user = private$user,
+          password = private$password,
+          repository = private$repository,
+          authentication = private$authentication,
+          protocol = private$protocol,
+          timeout = private$timeout
+        )
       )
     },
-    set_access_options = function(url = NULL, user = NULL, password = NULL, repository = NULL) {
+    #'
+    #' @description Set authentication access options for graphdb triplestore
+    #' 
+    #' @param url String containing the URL of the triplestore server
+    #' @param repository String containing the ID of the repository to which you want to connect to
+    #' @param user String containing the username if authentication is needed
+    #' @param password String containing the password if authentication is needed
+    #' @param timeout Connection timeout limit in seconds used for queries
+    #' 
+    set_access_options = function(url = NULL, user = NULL, password = NULL, repository = NULL, timeout = 100) {
       # Set private objects
       private$url = url
       private$user = user
       private$password = password
       private$repository = repository
       private$authentication = NULL
+      private$timeout = timeout
       
       # Set authentication
       if (!is.null(user) && !is.null(password)) {
@@ -59,11 +125,11 @@ triplestore_access = R6::R6Class(
       if (!is.null(url) && !is.null(private$authentication)){
         # Target url
         protocol_url <-  paste0(url, "/protocol")
-        
-        # Response from server
-        server_response = httr::content(httr::GET(url = protocol_url,
-                                                  config = private$authentication
-        )
+
+        server_response = server_api_get(
+          url = private$url,
+          resource = "protocol",
+          authentication = private$authentication
         )
         
         # Set private protocol
@@ -71,25 +137,29 @@ triplestore_access = R6::R6Class(
           stop(server_response)
         else
           private$protocol <- as.integer(server_response)
-      }      
+      }   
     },
+    #'
+    #' @description Submit a SPARQL query to the triplestore to obtain data
+    #' 
+    #' @param query String containing the SPARQL query to retrieve data
+    #' 
+    #' 
     submit_query = function(query)
     {
-      if (!is.null(self$access_options()$url) && !is.null(self$access_options()$authentication)) {
-        result = httr::POST(
-          url = paste0(private$url, "/repositories/", private$repository),
-          private$authentication,
-          httr::add_headers(Accept = "text/csv, */*;q=0.5"),
-          httr::add_headers('Content-Type' = "application/x-www-form-urlencoded; charset=utf-8"),
-          body = list(query = query),
-          encode = "form"
-        )
-        
-        return (utils::read.csv(textConnection(httr::content(result, as = "text")), stringsAsFactors = FALSE))
-      } else {
-        stop("Triplestore is not accessible, pleas review access options.")
-      }
+      return(server_api_post(
+        url = private$url,
+        repository = private$repository,
+        authentication = private$authentication,
+        query = query,
+        max_seconds = private$timeout
+      ))
     },
+    #' 
+    #' @description Show ontology information
+    #' 
+    #' @return List containing title, description and versionIRI of the ontology
+    #' 
     ontology = function()
     {
       # get ontology info
@@ -114,39 +184,3 @@ triplestore_access = R6::R6Class(
     }
   )
 )
-
-#' Set options to access the database
-#' 
-#' @description Set options to access a specific triple-store implemented in
-#' GraphDB.
-#' 
-#' @examples 
-#' 
-#' # Set access options to graphddb
-#' triplestore$set_access_options(
-#'   url = "https://graphdb.fortunalab.org",
-#'   user = "public_avida",
-#'   password = "public_avida",
-#'   repository = "avidaDB_tests"
-#' )
-#'
-#'# Show current access options
-#'triplestore$access_options()
-#'
-#'# Querying data with SPARQL
-#'triplestore$submit_query('PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-#'                          PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-#'                          select ?tandem_id where { 
-#'                            ?digital_tandem_repeat rdfs:label "digital tandem repeat"@en .
-#'                            ?tandem_id a ?digital_tandem_repeat .
-#'                          } limit 10')
-#'
-#'# Show ontology info
-#'triplestore$ontology()
-#'
-#' @export
-triplestore <- triplestore_access$new()
-triplestore$set_access_options(url = "https://graphdb.fortunalab.org",
-                               user = "public_avida",
-                               password = "public_avida",
-                               repository = "avidaDB_test")
