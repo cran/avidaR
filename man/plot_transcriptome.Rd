@@ -7,6 +7,7 @@
 plot_transcriptome(
   transcriptome_id,
   seed_id = NULL,
+  inst_set = "heads",
   save = FALSE,
   file_name = NULL,
   save_path = "~/transcriptome@chords",
@@ -23,6 +24,11 @@ logical value. This integer is used for starting the pseudo-random number
 generator that represents the environment experiencing a digital organism.
 If a logical value is used, TRUE returns data found in all environments and
 FALSE (by default) returns only distinct data regardless of the seed.}
+
+\item{inst_set}{Name of the instruction set. It must be one of the
+following: \code{heads} (default), \code{heads-sex}, or \code{transsmt}. The names
+correspond to the instruction set configuration files (e.g.,
+\code{instset-heads.cfg} for \code{heads}).}
 
 \item{save}{Logical value (TRUE/FALSE) to save the plot (FALSE by default).}
 

@@ -38,10 +38,10 @@ generator (i.e., a set of environments).
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -49,20 +49,20 @@ triplestore$set_access_options(
 )
 
 # Single phenotype
-get_genome_id_from_phenotype_id(phenotype_id = 1, triplestore = triplestore)
+get_genome_id_from_phenotype_id(phenotype_id = 1, triplestore = avidaDB)
 
 # More than one phenotype
 get_genome_id_from_phenotype_id(
   phenotype_id = c(1, 2),
   genome_seq = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # At seeds_4 and seed_5
 get_genome_id_from_phenotype_id(
   phenotype_id = c(1, 2),
   seed_id = c(4, 5),
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

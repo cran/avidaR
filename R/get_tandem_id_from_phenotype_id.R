@@ -5,56 +5,56 @@
 #' for starting the pseudo-random number generator (i.e., a set of environments).
 #'
 #' @param phenotype_id Integer or list of integer values.
-#' 
+#'
 #' @param seed_id Integer (from 1 to 1000) or a vector of integer values. This
 #' integer is used for starting the pseudo-random number generator that
 #' represents the environment experiencing a digital organism. If seed_id value
 #' is not specified, it returns data for a single randomly chosen seed_id value
 #' (between 1 and 1000).
-#' 
+#'
 #' @param tandem_seq Logical value (TRUE/FALSE) to show/hide this column
 #' (FALSE by default).
-#' 
+#'
 #' @param tandem_pos Logical value (TRUE/FALSE) to show/hide this column
 #' (FALSE by default).
-#' 
+#'
 #' @param triplestore Object of class triplestore_access which manages database
 #' access.
 #'
 #' @return Data frame. Column: "seed_id" (optional), "phenotype_id",
 #' "tandem_id", "tandem_seq" (optional), "tandem_pos (optional)."
 #'
-#' @examples 
-#' 
+#' @examples
+#'
 #' # Create triplestore object
-#' triplestore <- triplestore_access$new()
-#' 
+#' avidaDB <- triplestore_access$new()
+#'
 #' # Set access options
-#' triplestore$set_access_options(
+#' avidaDB$set_access_options(
 #'   url = "https://graphdb.fortunalab.org",
 #'   user = "public_avida",
 #'   password = "public_avida",
 #'   repository = "avidaDB_test"
 #' )
-#' 
+#'
 #' # Single phenotype
 #' get_tandem_id_from_phenotype_id(
 #'   phenotype_id = 8, tandem_seq = TRUE,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
-#' 
+#'
 #' # More than one phenotype at seed_1
 #' get_tandem_id_from_phenotype_id(
 #'   phenotype_id = c(2, 4, 8), seed_id = 1,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
-#' 
+#'
 #' # At seed_1 and seed_2
 #' get_tandem_id_from_phenotype_id(
 #'   phenotype_id = 1,
 #'   seed_id = c(1, 2),
 #'   tandem_pos = TRUE,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
 #'
 #' @export
@@ -73,18 +73,18 @@ get_tandem_id_from_phenotype_id <- function(phenotype_id, seed_id = sample(1:100
                   "select distinct  #encodes_at_seed_id# ?tandem_id #tandem_seq# #tandem_pos# ?phenotype_id {\n",
                   "    #phenotype\n",
                   "    #phenotype#\n\n",
-                    
+
                   "    # encodes at seed\n",
                   "    #encodes_at_seed#\n",
                   "    ?genome_id ONTOAVIDA:00001198 ?phenotype_seq_id .\n",
                   "    ?phenotype_seq_id ?encodes_at_seed_id ?phenotype_id .\n",
                   "    FILTER(?encodes_at_seed_id != rdfs:member) .\n\n",
-                    
+
                   "    # executes at seed\n",
                   "    ?organism_id RO:0002180 ?genome_id .\n",
                   "    ?organism_id ONTOAVIDA:00000004 ?transcriptome_seq_id .\n",
                   "    ?transcriptome_seq_id ?encodes_at_seed_id ?transcriptome_id .\n\n",
-                    
+
                   "    # tandem\n",
                   "    ?transcriptome_id RO:0001019 ?tandem_id .\n",
                   "    ?tandem_id ONTOAVIDA:00000121 ?tandem_seq .\n",
@@ -101,12 +101,15 @@ get_tandem_id_from_phenotype_id <- function(phenotype_id, seed_id = sample(1:100
   # Submit query
   response <- triplestore$submit_query(query = query)
 
-  if (nrow(response) > 0) {
+  if (is.null(response))
+    return(invisible(NULL))
+  
+  if (nrow(response)>0) {
     # Remove prefixes
     response <- remove_prefix(prefix = ontoavida_prefix(), data = response)
     response <- remove_prefix(prefix = rdf_prefix(), data = response)
     response <- clean_at_seed_id (data = response, seed_id = seed_id, at_seed_vars = "encodes_at_seed_id")
-    
+
     # Show/hide columns
     response <- show_hide_columns(vars_list = list("tandem_seq" = tandem_seq, "tandem_pos" = tandem_pos), data = response)
   }

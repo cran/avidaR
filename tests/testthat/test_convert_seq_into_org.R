@@ -1,5 +1,5 @@
 test_that("convert_seq_into_org.", {
-
+  
   seq <- "abcdefghijklmnopqrstuvwxyz"
   save_path <- "~/test_avidaR/"
 

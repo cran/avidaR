@@ -29,10 +29,10 @@ Get the phenotype encoded by the genome of a digital organism that is specified 
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -42,7 +42,7 @@ triplestore$set_access_options(
 # Single logic operation
 get_phenotype_id_from_logic_operation(
   logic_operation = "not-or",
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # More than one logic operation
@@ -51,7 +51,7 @@ ops <- c("equals", "exclusive or", "not-or", "and-not", "or", "orn-not")
 get_phenotype_id_from_logic_operation(
   logic_operation = ops,
   phenotype_binary = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

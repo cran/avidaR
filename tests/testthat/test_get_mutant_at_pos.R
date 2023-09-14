@@ -1,6 +1,9 @@
 test_that("get_mutant_at_pos", {
+  
+  skip_if_offline(host = "graphdb.fortunalab.org")
 
-  triplestore <- triplestore_access$new()
+  suppressMessages({
+  response <- triplestore <- triplestore_access$new()
   
   triplestore$set_access_options(
     url = "https://graphdb.fortunalab.org",
@@ -16,9 +19,12 @@ test_that("get_mutant_at_pos", {
     pos = 1,
     triplestore = triplestore
   )
+  
+  skip_if(is.null(response) || is.null(found1))
 
   expect_match(class(found1), "data.frame")
   expect_equal(colnames(found1), c("genome_id_wild_type", "genome_seq_wild_type", "genome_id_mutant", "genome_seq_mutant", "pos"))
-  expect_true(found1 %>% nrow() > 0)
+  expect_true(found1 %>% nrow() > 0)    
+  })
 
 })

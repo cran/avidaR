@@ -22,10 +22,10 @@ letters representing the instruction codes that make up its genome.
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -35,13 +35,13 @@ triplestore$set_access_options(
 # Get sequence for genome_1
 sequence <- get_genome_seq_from_genome_id(
   genome_id = 1,
-  triplestore = triplestore
+  triplestore = avidaDB
 )$genome_seq[1]
 
 # Get genome id from sequence
 get_genome_id_from_genome_seq(
   genome_seq = sequence,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

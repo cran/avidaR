@@ -4,7 +4,13 @@
 \alias{instruction_set}
 \title{Get the genetic language of Avida}
 \usage{
-instruction_set()
+instruction_set(inst_set = "heads")
+}
+\arguments{
+\item{inst_set}{Name of the instruction set. It must be one of the
+following: "heads" (default), "heads-sex", or \code{transsmt}. The names
+correspond to the instruction set configuration files (e.g.,
+\code{instset-heads.cfg} for "heads").}
 }
 \value{
 Data frame. Columns: "instruction", "letter", "color"

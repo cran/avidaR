@@ -38,10 +38,10 @@ for a list of seeds used for starting the pseudo-random number generator
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -49,13 +49,13 @@ triplestore$set_access_options(
 )
 
 # Single genome
-get_phenotype_id_from_genome_id(genome_id = 1, triplestore = triplestore)
+get_phenotype_id_from_genome_id(genome_id = 1, triplestore = avidaDB)
 
 # More than one genome at seed_1
 get_phenotype_id_from_genome_id(
   genome_id = c(1, 2, 3),
   seed_id = 1,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # More than one genome at more than one seed (e.g., seed_3 and seed_4)
@@ -63,7 +63,7 @@ get_phenotype_id_from_genome_id(
   genome_id = 1,
   seed_id = c(3, 4),
   phenotype_binary = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

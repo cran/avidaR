@@ -43,10 +43,10 @@ the pseudo-random number generator (i.e., a set of environments).
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -56,14 +56,14 @@ triplestore$set_access_options(
 # Single tandem
 get_tandem_seq_from_tandem_id(
   tandem_id = 6336945,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # More than one tandem at seed_1
 get_tandem_seq_from_tandem_id(
   tandem_id = c(6336945, 2520963, 2520963),
   seed_id = 1,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # At seed_3 and seed_5
@@ -72,7 +72,7 @@ get_tandem_seq_from_tandem_id(
   seed_id = c(1, 3),
   tandem_pos = TRUE,
   genome_id = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

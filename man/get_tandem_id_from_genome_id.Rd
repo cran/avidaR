@@ -41,10 +41,10 @@ digital organism having a specific genome.
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -52,13 +52,13 @@ triplestore$set_access_options(
 )
 
 # Single genome
-get_tandem_id_from_genome_id(genome_id = 1, triplestore = triplestore)
+get_tandem_id_from_genome_id(genome_id = 1, triplestore = avidaDB)
 
 # More than one genome
 get_tandem_id_from_genome_id(
   genome_id = c(1, 2, 3),
   tandem_seq = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # At seed_1, seed_3 and seed_5
@@ -66,7 +66,7 @@ get_tandem_id_from_genome_id(
   genome_id = 2,
   seed_id = c(1, 3, 5),
   tandem_pos = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

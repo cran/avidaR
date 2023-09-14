@@ -5,7 +5,7 @@
 #' pseudo-random number generator (i.e., a set of environments).
 #'
 #' @param logic_operation List of logical operations from the following set:
-#' "equals", "exclusive-or", "not-or", "and-not", "or", "orn-not", "and", 
+#' "equals", "exclusive-or", "not-or", "and-not", "or", "orn-not", "and",
 #' "not-and", "not".
 #' @param seed_id Integer (from 1 to 1000) or a vector of integer values. This
 #' integer is used for starting the pseudo-random number generator that
@@ -14,41 +14,41 @@
 #' (between 1 and 1000).
 #' @param genome_seq Logical value (TRUE/FALSE) to show/hide this column
 #' ("FALSE" by default).
-#' 
+#'
 #' @param triplestore Object of class triplestore_access which manages database
 #' access.
-#'  
+#'
 #' @examples
-#' 
+#'
 #' # Create triplestore object
-#' triplestore <- triplestore_access$new()
-#' 
+#' avidaDB <- triplestore_access$new()
+#'
 #' # Set access options
-#' triplestore$set_access_options(
+#' avidaDB$set_access_options(
 #'   url = "https://graphdb.fortunalab.org",
 #'   user = "public_avida",
 #'   password = "public_avida",
 #'   repository = "avidaDB_test"
 #' )
-#' 
+#'
 #' # Single logic operation
 #' get_genome_id_from_logic_operation(
 #'   logic_operation = "not-or",
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
-#' 
+#'
 #' # More than one logic operation
 #' get_genome_id_from_logic_operation(
 #'   logic_operation = c("not", "not-and"),
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
-#' 
+#'
 #' # At seed_1
 #' get_genome_id_from_logic_operation(
 #'   logic_operation = c("or", "equals", "and"),
 #'   seed_id = 1,
 #'   genome_seq = TRUE,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
 #'
 #' @return Data frame. Columns: "seed_id" (optional), "genome_id", "genome_seq" (optional).
@@ -65,10 +65,13 @@ get_genome_id_from_logic_operation <- function(logic_operation, seed_id = sample
 
   # Get phenotype_id
   phenotype_id <- logic_operation_to_integer(logic_operation)
-  
+
   # Submit query by calling get_genome_id_from_phenotype_id() function
   response <- get_genome_id_from_phenotype_id(phenotype_id = phenotype_id, seed_id = seed_id, genome_seq = genome_seq, triplestore = triplestore)
   
+  if (is.null(response))
+    return(invisible(NULL))
+
   response <- show_hide_columns(c("phenotype_id" = FALSE), response)
 
   # Return response

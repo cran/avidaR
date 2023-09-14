@@ -5,66 +5,66 @@
 #' starting the pseudo-random number generator (i.e., a set of environments).
 #'
 #' @param genome_seq String of letters or a list of strings.
-#' 
+#'
 #' @param seed_id Integer (from 1 to 1000), a vector of integer
 #' values, or a logical value. This integer is used for starting the
 #' pseudo-random number generator that represents the environment experiencing a
 #' digital organism. If a logical value is used, TRUE returns data found in all
 #' environments and FALSE (by default) returns only distinct data regardless of
 #' the seed.
-#' 
+#'
 #' @param genome_id Logical value (TRUE/FALSE) to show/hide genome_id (FALSE by
 #' default).
-#' 
+#'
 #' @param phenotype_binary Logical value (TRUE/FALSE) to show/hide phenotype_id
 #' in binary notation (FALSE by default).
-#' 
+#'
 #' @param triplestore Object of class triplestore_access which manages database
 #' access.
-#' 
-#' @examples 
-#' 
+#'
+#' @examples
+#'
 #' # Create triplestore object
-#' triplestore <- triplestore_access$new()
-#' 
+#' avidaDB <- triplestore_access$new()
+#'
 #' # Set access options
-#' triplestore$set_access_options(
+#' avidaDB$set_access_options(
 #'   url = "https://graphdb.fortunalab.org",
 #'   user = "public_avida",
 #'   password = "public_avida",
 #'   repository = "avidaDB_test"
 #' )
-#' 
+#'
 #' # Get sequences for genomes_1 and genome_2
 #' sequence1 <- get_genome_seq_from_genome_id(
 #'   genome_id = 1,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )$genome_seq[1]
-#' 
+#'
 #' sequence2 <- get_genome_seq_from_genome_id(
 #'   genome_id = 2,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )$genome_seq[1]
-#' 
+#'
 #' # Single genome
 #' get_phenotype_id_from_genome_seq(
 #'   genome_seq = sequence1,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
-#' 
+#'
 #' # More than one genome
 #' get_phenotype_id_from_genome_seq(
 #'   genome_seq = c(sequence1, sequence2),
 #'   genome_id = TRUE,
 #'   phenotype_binary = TRUE,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
-#' 
+#'
 #' # At seed_1 and seed_2
 #' get_phenotype_id_from_genome_seq(
 #'   genome_seq = sequence2,
 #'   seed_id = c(1, 2),
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
 #'
 #' @return Data frame. Columns: "seed_id" (optional), "genome_id" (optional),
@@ -78,7 +78,7 @@ get_phenotype_id_from_genome_seq <- function(genome_seq, seed_id = FALSE, genome
   validate_param(param = "seed_id", value = seed_id, types = c(1, 2))
   validate_param(param = "genome_id", value = genome_id, types = 1)
   validate_param(param = "phenotype_binary", value = phenotype_binary, types = 1)
-  
+
   # Build sparql query
   query <- paste0("PREFIX ONTOAVIDA: <", ontoavida_prefix(), ">\n",
                   "PREFIX RO: <http://purl.obolibrary.org/obo/RO_>\n",
@@ -97,7 +97,7 @@ get_phenotype_id_from_genome_seq <- function(genome_seq, seed_id = FALSE, genome
                   "    FILTER(?encodes_at_seed_id != rdfs:member ) .\n",
                   "}"
                 )
-  
+
   # Replace params
   query <- replace_at_seed_id(seed_id = seed_id, at_seed_vars = "encodes_at_seed", query = query)
   query <- replace_data(param = "genome", value = genome_id, query = query)
@@ -106,7 +106,10 @@ get_phenotype_id_from_genome_seq <- function(genome_seq, seed_id = FALSE, genome
   # Submit query
   response <- triplestore$submit_query(query = query)
 
-  if (nrow(response) > 0) {
+  if (is.null(response))
+    return(invisible(NULL))
+  
+  if (nrow(response)>0) {
     # Remove prefixes
     response <- remove_prefix(prefix = ontoavida_prefix(), data = response)
     response <- remove_prefix(prefix = rdf_prefix(), data = response)

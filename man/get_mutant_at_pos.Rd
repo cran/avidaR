@@ -54,10 +54,10 @@ and its single-point mutants.
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -66,9 +66,9 @@ triplestore$set_access_options(
 
 get_mutant_at_pos(
   genome_id = 582,
-  inst_replaced = 'o', 
+  inst_replaced = 'o',
   inst_replaced_by = 'a',
   pos = 1,
-  triplestore = triplestore)
+  triplestore = avidaDB)
 
 }

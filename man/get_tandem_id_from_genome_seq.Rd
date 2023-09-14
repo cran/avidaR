@@ -42,10 +42,10 @@ instruction codes that make up its genome.
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -55,25 +55,25 @@ triplestore$set_access_options(
 # Get sequences for genomes 1 and 2
 sequence1 <- get_genome_seq_from_genome_id(
   1,
-  triplestore = triplestore
+  triplestore = avidaDB
 )$genome_seq
 
 sequence2 <- get_genome_seq_from_genome_id(
   2,
-  triplestore = triplestore
+  triplestore = avidaDB
 )$genome_seq
 
 # Single genome
 get_tandem_id_from_genome_seq(
   genome_seq = sequence1,
-  triplestore = triplestore
+  triplestore = avidaDB
  )
 
 # More than one genome
 get_tandem_id_from_genome_seq(
   genome_seq = c(sequence1, sequence2),
   tandem_seq = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # At seed_1 and seed_2
@@ -82,7 +82,7 @@ get_tandem_id_from_genome_seq(
   seed_id = c(1,2),
   tandem_seq = TRUE,
   tandem_pos = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

@@ -43,10 +43,10 @@ starting the pseudo-random number generator (i.e., a set of environments).
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -56,18 +56,18 @@ triplestore$set_access_options(
 # Get sequences for genomes_1 and genome_2
 sequence1 <- get_genome_seq_from_genome_id(
   genome_id = 1,
-  triplestore = triplestore
+  triplestore = avidaDB
 )$genome_seq[1]
 
 sequence2 <- get_genome_seq_from_genome_id(
   genome_id = 2,
-  triplestore = triplestore
+  triplestore = avidaDB
 )$genome_seq[1]
 
 # Single genome
 get_phenotype_id_from_genome_seq(
   genome_seq = sequence1,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # More than one genome
@@ -75,14 +75,14 @@ get_phenotype_id_from_genome_seq(
   genome_seq = c(sequence1, sequence2),
   genome_id = TRUE,
   phenotype_binary = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # At seed_1 and seed_2
 get_phenotype_id_from_genome_seq(
   genome_seq = sequence2,
   seed_id = c(1, 2),
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

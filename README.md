@@ -1,4 +1,4 @@
-# avidaR: an R library for performing complex queries on digital organisms stored in avidaDB.
+# avidaR: an R library to perform complex queries on a semantic database of digital organisms (avidaDB)
 
 
 <!-- badges: start -->
@@ -26,12 +26,13 @@ avidaR depends on the following packages:
 - [circlize](https://cran.r-project.org/package=circlize)
 - [RColorBrewer](https://cran.r-project.org/package=RColorBrewer)
 - [R6](https://cran.r-project.org/package=R6)
+- [curl](https://cran.r-project.org/package=curl)
 - [devtools](https://cran.r-project.org/package=devtools): needed for the GitLab installation.
 
 Please, first install those packages with `install.packages`.
 Then, install avidaR from GitLab using the following command:
 
-`devtools::install_gitlab("fortunalab/avidaR@main")`
+`devtools::install_gitlab("fortunalab/avidaR")`
 
 ## Usage.
 
@@ -49,10 +50,10 @@ avidaR provides a `triplestore_access` class to manage access options and retrie
 
 ``` r
 # create object of class triplestore_access
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
-# set access options do avidaDB
-triplestore$set_access_options(
+# set access options to avidaDB
+avidaDB$set_access_options(
     url = "https://graphdb.fortunalab.org",
     user = "public_avida",
     password = "public_avida",
@@ -64,13 +65,13 @@ triplestore$set_access_options(
 The following function can be used to get the genome sequence of a single genome (e.g., genome_id = 1):
 
 ```  r
-get_genome_seq_from_genome_id(genome_id = 1, triplestore = triplestore)
+get_genome_seq_from_genome_id(genome_id = 1, triplestore = avidaDB)
 ```
 
 or to get the genome sequences of multiple genomes at once:
 
 ```  r
-get_genome_seq_from_genome_id(genome_id = c(1, 2, 3), triplestore = triplestore)
+get_genome_seq_from_genome_id(genome_id = c(1, 2, 3), triplestore = avidaDB)
 ```
 
 Please, use the R help command to get more details about any specific function by writing the name of the function preceded by the symbol `?`:
@@ -116,12 +117,20 @@ Please, use the R help command to get more details about any specific function b
 - `get_tandem_id_from_phenotype_id()`
 - `get_tandem_seq_from_tandem_id()`
 
+### Get data provenance:
+
+- `get_experiment_id_from_organism_id()`
+- `get_doi_from_experiment_id()`
+- `get_docker_image_from_experiment_id()`
+
 
 ### Miscellaneous functions:
 
 - `get_db_summary()`
+- `instruction_set()`
 - `get_genome_id_of_wild_type_organisms()`
 - `get_mutant_at_pos()`
+- `convert_org_into_seq()`
 - `convert_seq_into_org()`
 - `plot_transcriptome()`
 

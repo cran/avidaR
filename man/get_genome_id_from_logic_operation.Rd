@@ -39,10 +39,10 @@ pseudo-random number generator (i.e., a set of environments).
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -52,13 +52,13 @@ triplestore$set_access_options(
 # Single logic operation
 get_genome_id_from_logic_operation(
   logic_operation = "not-or",
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # More than one logic operation
 get_genome_id_from_logic_operation(
   logic_operation = c("not", "not-and"),
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # At seed_1
@@ -66,7 +66,7 @@ get_genome_id_from_logic_operation(
   logic_operation = c("or", "equals", "and"),
   seed_id = 1,
   genome_seq = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

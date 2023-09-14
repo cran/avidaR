@@ -31,12 +31,12 @@ Get the logic operations encoded by a digital organism having
 the requested phenotype.
 }
 \examples{
- 
+
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -47,17 +47,17 @@ triplestore$set_access_options(
 get_logic_operation_from_phenotype_id(
   phenotype_id = 1,
   phenotype_binary = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # More than one phenotype
 get_logic_operation_from_phenotype_id(
   phenotype_id = c(1,2,3),
   phenotype_binary = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # All phenotypes
-get_logic_operation_from_phenotype_id(triplestore = triplestore)
+get_logic_operation_from_phenotype_id(triplestore = avidaDB)
 
 }

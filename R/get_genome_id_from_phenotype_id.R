@@ -11,41 +11,41 @@
 #' (between 1 and 1000).
 #' @param genome_seq Logical value (TRUE/FALSE) to show/hide this column
 #' ("FALSE" by default).
-#' 
+#'
 #' @param triplestore Object of class triplestore_access which manages database
 #' access.
-#' 
+#'
 #' @return Data frame. Columns: "seed_id" (optional), "phenotype_id",
 #' "genome_seq" (optional).
-#' 
+#'
 #' @examples
-#' 
+#'
 #' # Create triplestore object
-#' triplestore <- triplestore_access$new()
-#' 
+#' avidaDB <- triplestore_access$new()
+#'
 #' # Set access options
-#' triplestore$set_access_options(
+#' avidaDB$set_access_options(
 #'   url = "https://graphdb.fortunalab.org",
 #'   user = "public_avida",
 #'   password = "public_avida",
 #'   repository = "avidaDB_test"
 #' )
-#' 
+#'
 #' # Single phenotype
-#' get_genome_id_from_phenotype_id(phenotype_id = 1, triplestore = triplestore)
-#' 
+#' get_genome_id_from_phenotype_id(phenotype_id = 1, triplestore = avidaDB)
+#'
 #' # More than one phenotype
 #' get_genome_id_from_phenotype_id(
 #'   phenotype_id = c(1, 2),
 #'   genome_seq = TRUE,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
-#' 
+#'
 #' # At seeds_4 and seed_5
 #' get_genome_id_from_phenotype_id(
 #'   phenotype_id = c(1, 2),
 #'   seed_id = c(4, 5),
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
 #'
 #' @export
@@ -63,14 +63,14 @@ get_genome_id_from_phenotype_id <- function(phenotype_id, seed_id = sample(1:100
                   "select distinct #encodes_at_seed_id# ?genome_id #genome_seq# ?phenotype_id where {\n",
                   "    # phenotypes\n",
                   "    #phenotype#\n\n",
-                  
+
                   "    # encodes at seed\n",
                   "    ?genome_id ONTOAVIDA:00001198 ?phenotype_seq_id .\n",
                   "    ?phenotype_seq_id ?encodes_at_seed_id ?phenotype_id .\n",
                   "    ?encodes_at_seed_id rdfs:subPropertyOf rdfs:member .\n",
                   "    #encodes_at_seed#\n",
                   "    FILTER(?encodes_at_seed_id != rdfs:member ) .\n\n",
-                  
+
                   "    # genome seq\n",
                   "    ?genome_id ONTOAVIDA:00000122 ?genome_seq .\n",
                   "}"
@@ -86,7 +86,10 @@ get_genome_id_from_phenotype_id <- function(phenotype_id, seed_id = sample(1:100
   # Submit query
   response <- triplestore$submit_query(query = query)
 
-  if (nrow(response) > 0) {
+  if (is.null(response))
+    return(invisible(NULL))
+  
+  if (nrow(response)>0) {
     # Remove prefixes
     response <- remove_prefix(prefix = ontoavida_prefix(), data = response)
     response <- remove_prefix(prefix = rdf_prefix(), data = response)

@@ -48,10 +48,10 @@ generator (i.e., a set of environments).
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -61,14 +61,14 @@ triplestore$set_access_options(
 # Singel genome
 get_transcriptome_id_from_genome_id(
   genome_id = 1,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # More than one genome
 get_transcriptome_id_from_genome_id(
   genome_id = c(1, 2),
   transcriptome_seq = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # At seed_1 and seed_3
@@ -76,7 +76,7 @@ get_transcriptome_id_from_genome_id(
   genome_id = 2,
   seed_id = c(1, 3),
   transcriptome_pos = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

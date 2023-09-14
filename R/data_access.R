@@ -133,8 +133,8 @@ triplestore_access <- R6::R6Class(
         )
         
         # Set private protocol
-        if (is.na(as.integer(server_response)))
-          stop(server_response)
+        if (is.null(server_response))
+          message(server_response) # stop()
         else
           private$protocol <- as.integer(server_response)
       }   

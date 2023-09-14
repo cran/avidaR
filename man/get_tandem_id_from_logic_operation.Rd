@@ -43,10 +43,10 @@ digital organism that executes a specific combination of logic operations.
 \examples{
 
 # Create triplestore object
-triplestore <- triplestore_access$new()
+avidaDB <- triplestore_access$new()
 
 # Set access options
-triplestore$set_access_options(
+avidaDB$set_access_options(
   url = "https://graphdb.fortunalab.org",
   user = "public_avida",
   password = "public_avida",
@@ -56,14 +56,14 @@ triplestore$set_access_options(
 # Single logic operation
 get_tandem_id_from_logic_operation(
   logic_operation = "not",
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # More than one logic operation
 get_tandem_id_from_logic_operation(
   logic_operation = c("not", "and"),
   tandem_seq = TRUE,
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 # At seed_1 and seed_2
@@ -72,7 +72,7 @@ get_tandem_id_from_logic_operation(
   tandem_seq = TRUE,
   tandem_pos = TRUE,
   seed_id = c(1,2),
-  triplestore = triplestore
+  triplestore = avidaDB
 )
 
 }

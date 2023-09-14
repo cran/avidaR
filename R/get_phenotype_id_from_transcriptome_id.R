@@ -5,49 +5,49 @@
 #' the pseudo-random number generator (i.e., a set of environments).
 #'
 #' @param transcriptome_id Integer or list of integer values.
-#' 
+#'
 #' @param seed_id Integer (from 1 to 1000), a vector of integer values, or a
 #' logical value. This integer is used for starting the pseudo-random number
 #' generator that represents the environment experiencing a digital organism.
 #' If a logical value is used, TRUE returns data found in all environments and
 #' FALSE (by default) returns only distinct data regardless of the seed.
-#' 
+#'
 #' @param phenotype_binary Logical value (TRUE/FALSE) to show/hide phenotype in
 #' binary notation (FALSE by default).
-#' 
+#'
 #' @param triplestore Object of class triplestore_access which manages database
 #' access.
-#' 
-#' @examples 
-#' 
+#'
+#' @examples
+#'
 #' # Create triplestore object
-#' triplestore <- triplestore_access$new()
-#' 
+#' avidaDB <- triplestore_access$new()
+#'
 #' # Set access options
-#' triplestore$set_access_options(
+#' avidaDB$set_access_options(
 #'   url = "https://graphdb.fortunalab.org",
 #'   user = "public_avida",
 #'   password = "public_avida",
 #'   repository = "avidaDB_test"
 #' )
-#' 
+#'
 #' # Single transcriptome
 #' get_phenotype_id_from_transcriptome_id(
 #'   transcriptome_id = 53674,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
-#' 
+#'
 #' # More than one transcriptome
 #' get_phenotype_id_from_transcriptome_id(
 #'   transcriptome_id = c(53674, 1666099),
 #'   phenotype_binary = TRUE,
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
 #'
 #' # At seed_1 and seed_3
 #' get_phenotype_id_from_transcriptome_id(
 #'   transcriptome_id = 53674, seed_id = c(1,3),
-#'   triplestore = triplestore
+#'   triplestore = avidaDB
 #' )
 #'
 #' @return Data frame. Columns: "seed_id" (optional),	"transcriptome_id",	"phenotype_id", "phenotype_binary" (optional)
@@ -71,27 +71,27 @@ get_phenotype_id_from_transcriptome_id <- function(transcriptome_id, seed_id = F
 
                   "    # organism\n",
                   "    ?organism_id ONTOAVIDA:00000004 ?transcriptome_seq_id .\n\n",
-                  
+
                   "    # container\n",
                   "    ?transcriptome_seq_id ?executes_at_seed_id ?transcriptome_id .\n\n",
-                  
+
                   "    # seed\n",
                   "    #executes_at_seed#\n",
                   "    ?executes_at_seed_id rdfs:subPropertyOf rdfs:member .\n",
                   "    FILTER(?executes_at_seed_id != rdfs:member ) .\n\n",
-                  
+
                   "    # genome\n",
                   "    ?organism_id RO:0002180 ?genome_id .\n\n",
-                  
+
                   "    # encodes at executes_at_seed_id\n",
                   "    ?genome_id ONTOAVIDA:00001198 ?phenotype_seq_id .\n",
-                  
+
                   "    # phenotype\n",
                   "    ?phenotype_seq_id ?executes_at_seed_id ?phenotype_id .\n\n",
-                  
+
                   "}"
-                )     
-    
+                )
+
   # Replace params
   query <- replace_data(param = "transcriptome", value = transcriptome_id, query = query)
   query <- replace_at_seed_id(seed_id = seed_id, at_seed_vars = c("encodes_at_seed", "executes_at_seed"), query = query)
@@ -100,7 +100,10 @@ get_phenotype_id_from_transcriptome_id <- function(transcriptome_id, seed_id = F
   response <- triplestore$submit_query(query = query)
 
 
-  if (nrow(response) > 0) {
+  if (is.null(response))
+    return(invisible(NULL))
+  
+  if (nrow(response)>0) {
     # Remove prefixes
     response <- remove_prefix(prefix = ontoavida_prefix(), data = response)
     response <- remove_prefix(prefix = rdf_prefix(), data = response)
