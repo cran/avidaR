@@ -41,8 +41,8 @@ where the digital organism file will be saved.}
 String of characters.
 }
 \description{
-Converts a genome instruction sequence into a digital organism
-file.
+Converts a digital organism instruction set into a digital
+genome instruction sequence.
 }
 \examples{
 

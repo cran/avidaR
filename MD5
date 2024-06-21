@@ -1,7 +1,7 @@
-1cff9cd2c5874896307337341ac82a5b *DESCRIPTION
+5be5e3fd1e2d405c2d6c4e09078e59a0 *DESCRIPTION
 0727204b2f8a08d69c6568e5d451b67f *LICENSE
 4272065dcd7c6ab541594aad308afb55 *NAMESPACE
-399d7c846dbc76b8a4939c40849a17f6 *NEWS.md
+4cac79989180e0d16825919ff6a3b91c *NEWS.md
 128a197de8dbbe969ec1fa7c02a5d7b8 *R/avidaR.R
 46286fcf79d7b06d058cb002be41f843 *R/convert_org_into_seq.R
 c83cec59ba4fe601f8805d94e2a9fa41 *R/convert_seq_into_org.R
@@ -34,9 +34,9 @@ a0f5dc23bab858fcbb143e9ff301245d *R/get_transcriptome_id_from_genome_id.R
 89049e306acadacd2476ee6a04f05a87 *R/get_transcriptome_seq_from_transcriptome_id.R
 01ebde870e4e631d2de0aeb3de094d5f *R/plot_transcriptome.R
 c61bcdd4ea073425de506958f4a7f119 *R/utils.R
-506606df8be89ba54ad8b85459340697 *README.md
+cac025a76f2f4f62b9c4d2cd7e9543fa *README.md
 b2831cb839c3e56fa0a0dc13fc9986ca *inst/WORDLIST
-bb916cc616c4040ee827708413900d3e *man/convert_org_into_seq.Rd
+79d2d709f29e21414a5f128634a38259 *man/convert_org_into_seq.Rd
 213a63b77ba6937cb59cbf11bf8bfc17 *man/convert_seq_into_org.Rd
 8fe5637feff68f62363a1360c9b4dd41 *man/get_db_summary.Rd
 6a6ab9240c1e9f9669e34fee2b9827f9 *man/get_docker_image_from_experiment_id.Rd

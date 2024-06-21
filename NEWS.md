@@ -1,3 +1,11 @@
+# avidaR 1.2.1
+
+**Bug fixes**
+
+* Fix Language field value: invalid 'en_US' value replaced by 'en-US'.
+* Fix CRAN URL for avidaR package not in canonical form.
+* Fix possibly non valid URL.
+
 # avidaR 1.2.0
 
 **New features**

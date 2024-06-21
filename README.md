@@ -11,7 +11,7 @@ CRAN](https://cranlogs.r-pkg.org/badges/grand-total/avidaR?color=brightgreen)](h
 
 ## Introduction.
 
-avidaR was born as part of a project focused on providing semantics to data resulting from experiments carried out in an Artificial Life software platform ([Avida](https://avida.devosoft.org)) for studying the evolution of self-replicating computer programs, known as digital organisms. This package provides users of the R programming language with an easy-to-use tools for performing complex queries on avidaDB, a semantic database that stores genomes and transcriptomes of more than a million digital organisms. The avidaR library was developed by the [Computational Biology Lab](https://fortunalab.org) of the Doñana Biological Station (EBD), a research institute of the Spanish National Research Council (CSIC) based in Seville (Spain).
+Digital evolution is a branch of artificial life in which self-replicating computer programs—digital organisms—mutate and evolve within a user-defined computational environment. In spite of its value in biology, we still lack an up-to-date and comprehensive database on digital organisms resulting from [Avida](https://avida.devosoft.org) evolution experiments. Therefore, we have developed an [ontology-based](https://owl.fortunalab.org/ontoavida/) semantic database—avidaDB—and an R package—[avidaR](https://gitlab.com/fortunalab/avidaR)—that provides users of the R programming language with an easy-to-use tool for performing complex queries without specific knowledge of SPARQL or RDF. avidaR can be used to do research on robustness, evolvability, complexity, phenotypic plasticity, gene regulatory networks, and genomic architecture by retrieving the genomes, phenotypes, and transcriptomes of more than a million digital organisms available on avidaDB. avidaR is already accepted on [CRAN](https://cran.r-project.org/package=avidaR) (i.e., a comprehensive collection of R packages contributed by the R community) and will make biologists better equipped to embrace the field of digital evolution. avidaR was developed by the [Computational Biology Lab](https://fortunalab.org) of the Doñana Biological Station (EBD), a research institute of the Spanish National Research Council (CSIC) based in Seville (Spain).
 
 ## Installation.
 
@@ -29,17 +29,24 @@ avidaR depends on the following packages:
 - [curl](https://cran.r-project.org/package=curl)
 - [devtools](https://cran.r-project.org/package=devtools): needed for the GitLab installation.
 
-Please, first install those packages with `install.packages`.
-Then, install avidaR from GitLab using the following command:
+You can install avidaR from CRAN:
 
-`devtools::install_gitlab("fortunalab/avidaR")`
+``` r
+install.packages("avidaR")
+```
+
+or from our GitLab repository to get the latest version:
+
+``` r
+devtools::install_gitlab("fortunalab/avidaR")
+```
 
 ## Usage.
 
-avidaR is loaded as follows:
+avidaR can be loaded as follows:
 
 ``` r
-library(avidaR)
+library("avidaR")
 ```
 
 ## Connect to avidaDB.
